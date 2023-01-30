@@ -75,6 +75,17 @@ sovelluksen keskusteluryhmien ylläpitäjät sisältävä tietokantataulu
 - handle TEXT NOT NULL UNIQUE
 - chat_link TEXT NOT NULL
 
+#### Requests
+
+sovelluksen tietoihin kohdistuvien muutosten hyväksymispyynnöt sisältävä tietokantataulu
+
+- id SERIAL PRIMARY KEY
+- user_id INTEGER NOT NULL REFERENCES Users (id), muutoksen pyytänyt käyttäjä
+- info_table TEXT NOT NULL, taulu, jonka tietoa pyydetään muutettavan
+- info_id INTEGER NOT NULL, taulun rivi, jota pyydetään muutettavan
+- change_type TEXT NOT NULL, muutostyyppi (DELETE/UPDATE)
+- change_info TEXT[], muutokset
+
 </p>
 </details>
 
@@ -141,3 +152,36 @@ Kirjautumistiedoista salasanan vaihtaminen on olennainen toiminnallisuus ja se o
 Hallintanäkymä ylläpitäjille. Näkymästä käsin voidaan lisätä, päivittää ja poistaa keskusteluryhmiä, lisätä ja poistaa ryhmiä sekä muuttaa ylläpitäjästatuksia. Näkymässä on esitettynä myös sovelluksen tilastotietoja.
 
 ## Teknologiat
+
+Sovelluksen lähdekoodissa on käytetty pythonin versiota 3 ja se ei siten ole yhteensopiva pythonin versioiden 1 ja 2 kanssa. Suosittelemme käyttämään viimeisintä versiota ja pitämään päivitykset ajantasaisina.
+
+### Python-kirjastot
+
+Sovelluksen lähdekoodissa on lisäksi käytetty kirjastoja, joilla on toteutettu mm. sovelluksen palvelintoiminnallisuudet.
+
+<details><summary>Käytetyt kirjastot</summary>
+<p>
+
+Ympäristömuuttujat
+- dotenv
+- python-dotenv
+
+Palvelintoiminnot
+- flask
+
+Tietokantatoiminnot
+- flask-sqlalchemy
+- sqlalchemy
+- psycopg2
+
+Tietoturva
+- Werkzeug (salasanojen kryptaus/dekryptaus)
+
+</p>
+</details>
+
+## Muuta
+
+[Kuvake sovellukselle](https://pixabay.com/vectors/chat-icon-symbol-business-2013193/)
+
+[Kuvakkeen konversio favicon.ico-muotoon](https://favicon.io/favicon-converter/)

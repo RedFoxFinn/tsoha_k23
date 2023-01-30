@@ -10,6 +10,63 @@ Sovelluksen käyttötarkoitus: keskusteluryhmien sekä niiden liittymislinkkien 
 
 Ensisijaisesti kohdennettu telegram-ryhmille, mutta toteutettavissa myös muiden palveluiden keskusteluiden listaamiseen.
 
+### Sovelluksen käynnistäminen
+
+1:
+
+Sovelluksen lähdekoodi ladataan omalle tietokoneelle lataamalla se GitHub-repositoriosta pakattuna yhdeksi arkistoksi, joka puretaan haluttuun hakemistoon.
+
+Vaihtoehtoisesti lataamisen voi tehdä komennolla `git clone https://github.com/RedFoxFinn/ChatList.git` haluamaasi hakemistoon.
+
+
+2:
+
+Sovelluksen riippuvuudet asennetaan käyttämällä python3:n paketinhallintaa, pip3:a komentorivillä.
+
+Mikäli python3 ei ole tietokoneellasi asennettuna, täytyy se asentaa ennen tämän vaiheen suorittamista.
+
+Luodaan ensin python3:n virtuaaliympäristö:
+
+  `python3 -m venv venv`
+
+ja käynnistetään se:
+
+  `source venv/bin/activate`
+
+Tämän virtuaalisen ympäristön voi sulkea komennolla
+
+  `deactivate`
+
+Virtuaaliympäristön ollessa aktiivisena (esimerkiksi riippuvuuksien asennuksen aikana) alkaa komentorivillä komentokehoite (rivi, jolle komennot kirjoitetaan) merkinnällä `(venv)`.
+
+Riippuvuuksien asentaminen tapahtuu komennolla
+
+  `pip3 install -r requirements.txt`
+
+Tämän komennon suorittamisessa voi mennä pieni hetki, kun paketinhallinta asentaa tarvittavat paketit ja pakettiversiot.
+
+3:
+
+Kun komento on suoritettu loppuun, määritetään sovelluksen ympäristömuuttujat uuteen tiedostoon, jonka nimeksi määritetään `.env`
+
+Tuohon tiedostoon kirjoitetaan ensimmäiselle riville `DATABASE_URL=postgresql+psycopg2:///`, jonka perään ilman väliä tai muita merkkejä kirjoitetaan oma käyttäjätunnus (löytyy komentokehoitteen riviltä `(venv)` jälkeen ja ennen `@`-merkkiä)
+
+Toiselle riville kirjoitetaan `USER_REGISTRATION_CODE=`, jonka perään kirjoitetaan haluttu merkkijono. Tämä merkkijono vaaditaan sovellukseen rekisteröidyttäessä ja ensimmäisen rekisteröityjän tunnuksesta tulee automaattisesti ylläpitäjä sovellukseen erityisillä oikeuksilla (superuser).
+
+4:
+
+Lopuksi ennen käynnistämistä virtuaaliympäristössä määritetään vielä sovelluksen tietokannan rakenne ja tarvittavat taulut komennolla
+
+  `psql < schema.sql`
+
+5:
+
+Nyt kaikki on valmista ja sovellus voidaan käynnistää komennolla
+
+  `flask run`
+
+Sovellus toimii nyt tietokoneella, oletuksena verkkoselaimen osoitteessa `http://localhost:5000/`
+
 ### Tietokanta
 
 Sovellus käyttää PostgreSQL-tietokantaa tiedon pysyväissäilytykseen.
@@ -163,7 +220,6 @@ Sovelluksen lähdekoodissa on lisäksi käytetty kirjastoja, joilla on toteutett
 <p>
 
 Ympäristömuuttujat
-- dotenv
 - python-dotenv
 
 Palvelintoiminnot
@@ -176,6 +232,9 @@ Tietokantatoiminnot
 
 Tietoturva
 - Werkzeug (salasanojen kryptaus/dekryptaus)
+
+Verkkosivut
+- jinja2
 
 </p>
 </details>

@@ -47,11 +47,15 @@ Tämän komennon suorittamisessa voi mennä pieni hetki, kun paketinhallinta ase
 
 3:
 
-Kun komento on suoritettu loppuun, määritetään sovelluksen ympäristömuuttujat uuteen tiedostoon, jonka nimeksi määritetään `.env`
+Kun komento on suoritettu loppuun, määritetään sovelluksen ympäristömuuttujat uuteen tiedostoon, jonka nimeksi määritetään `.env` (piste alkuun).
 
 Tuohon tiedostoon kirjoitetaan ensimmäiselle riville `DATABASE_URL=postgresql+psycopg2:///`, jonka perään ilman väliä tai muita merkkejä kirjoitetaan oma käyttäjätunnus (löytyy komentokehoitteen riviltä `(venv)` jälkeen ja ennen `@`-merkkiä)
 
 Toiselle riville kirjoitetaan `USER_REGISTRATION_CODE=`, jonka perään kirjoitetaan haluttu merkkijono. Tämä merkkijono vaaditaan sovellukseen rekisteröidyttäessä ja ensimmäisen rekisteröityjän tunnuksesta tulee automaattisesti ylläpitäjä sovellukseen erityisillä oikeuksilla (superuser).
+
+Kolmannelle riville kirjoitetaan `SECRET_KEY=`, jonka perään kirjoitetaan tai liitetään haluttu merkkijono. Tämä merkkijono toimii sovelluksen istuntotoimintojen avaimena ja ilman sitä, ei toiminto toimi lainkaan.
+
+Neljännelle riville voi halutessaan syöttää vapaavalintaisen nimen, joka tulee sovelluksen käyttöliittymässä näytettäväksi nimeksi. Tämä on hyvä keino yksilöidä sovellus tietylle käyttäjäryhmälle, kuten harrasteporukalle. Kirjoita tällöin `CUSTOM_APP_NAME=` ja haluamasi nimi sovellukselle. Mikäli merkkijono on tyhjä tai se puuttuu, tulee sovelluksen nimeksi oletusarvoinen `ChatList`.
 
 4:
 
@@ -244,3 +248,5 @@ Verkkosivut
 [Kuvake sovellukselle](https://pixabay.com/vectors/chat-icon-symbol-business-2013193/)
 
 [Kuvakkeen konversio favicon.ico-muotoon](https://favicon.io/favicon-converter/)
+
+[Ikoneita UI:ssa](https://icon-sets.iconify.design/bi/)

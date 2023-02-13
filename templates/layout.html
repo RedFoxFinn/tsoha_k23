@@ -1,13 +1,24 @@
 <!doctype html>
 <meta charset="utf-8" />
 <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-<link rel="stylesheet" href="../styles/categories.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='categories.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
 <meta
   name="description"
-  content="ChatList - manage your chat link collection"
+  content="{{ app_name }} - manage your chat link collection"
 />
 <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-<title>ChatList</title>
+<title>{{ app_name }}</title>
+<h1>{{ app_name }}</h1>
+<nav>
+  <a href="/">Etusivu</a>
+  <a href="/login">Kirjautuminen</a>
+  <a href="/register">Rekisteröityminen</a>
+  <a href="/password">Salasanan vaihto</a>
+  {% if session.username %}
+    <a href="/logout">Kirjaudu ulos</a>
+  {% endif %}
+</nav>
 {% with messages = get_flashed_messages(with_categories = True) %}
   {% if messages %}
     <ul class=flashes>

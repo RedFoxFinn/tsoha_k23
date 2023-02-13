@@ -1,42 +1,63 @@
+from datetime import date, datetime
 from flask import Flask
-from flask import abort, redirect, render_template, request, session, flash
+from flask import abort, redirect, render_template, request, session, flash, make_response
 from flask_sqlalchemy import SQLAlchemy
 
-from modules.config_module import DB_URL, REG_CODE, SECRET_KEY
+from modules.config_module import DB_URL, REG_CODE, SECRET_KEY, APP_NAME
 
 from tools.validate_input import input_validation, validate_reg_or_log
 from tools.password_tools import validate_password_on_login, validate_passwords_on_change, validate_password_on_register
 
-application = Flask(__name__)
+application = Flask(__name__, template_folder="templates", static_folder='static')
 application.config["SECRET_KEY"] = SECRET_KEY
 application.config["SQLALCHEMY_DATABASE_URI"] = DB_URL
 DB = SQLAlchemy(application)
 
-@application.route("/")
+@application.context_processor
+def set_global_html_variables():
+    template_config = {'app_name': APP_NAME}
+    return template_config
+
+@application.route("/", methods=["GET"])
 def frontpage():
     sql = "SELECT count(*) FROM Users"
     result = DB.session.execute(sql)
     data = result.fetchall()[0]
     if data[0] == 0:
-        flash("Aloitetaan sovelluksen alustaminen...","info")
+        flash("Aloitetaan sovelluksen alustaminen...","warning")
         return redirect("/init_site")
     else:
-        localized = "Tervetuloa käyttämään ChatListiä"
+        localized = f"Tervetuloa sovellukseen {APP_NAME}"
         return render_template("index.html", text=localized)
 
 @application.route("/init_site")
 def init_site():
-    localized = ["Tervetuloa käyttämään ChatListiä", "Aloita alustan käyttöönotto määrittämällä ylläpitäjä", "Aloita määritys"]
-    return render_template("initialization.html", text=localized[0], notice=localized[1], submit=localized[2])
+    sql = "SELECT count(*) FROM Users"
+    result = DB.session.execute(sql)
+    data = result.fetchall()[0]
+    if data[0] == 0:
+        localized = [f"Tervetuloa sovellukseen {APP_NAME}", "Aloita alustan käyttöönotto määrittämällä ylläpitäjä", "Aloita määritys"]
+        return render_template("initialization.html", text=localized[0], notice=localized[1], submit=localized[2])
+    else:
+        return redirect('/login')
 
-@application.route("/login")
+@application.route("/login", methods=["GET"])
 def login():
-    localized = ["Kirjautuminen palveluun","Käyttäjänimi","Salasana","Kirjaudu"]
-    return render_template("login.html",
-      text=localized[0],
-      username=localized[1],
-      password=localized[2],
-      submit=localized[3])
+    sql = "SELECT count(*) FROM Users"
+    result = DB.session.execute(sql)
+    data = result.fetchall()[0]
+    _user = session.get("username")
+    if data[0] == 0:
+        return redirect('/init_site')
+    if _user != None:
+        return redirect("/")
+    else:
+        localized = ["Kirjautuminen palveluun","Käyttäjänimi","Salasana","Kirjaudu"]
+        return render_template("login.html",
+          text=localized[0],
+          username=localized[1],
+          password=localized[2],
+          submit=localized[3])
 
 @application.route("/handle_login", methods=["POST"])
 def handle_login():
@@ -52,8 +73,9 @@ def handle_login():
         data = result.fetchone()
         validation_result = validate_password_on_login(__fields[1], data[2])
         if validation_result:
+            session["username"] = __fields[0]
             flash("Kirjautuminen onnistui!", "info")
-            return  redirect("/")
+            return redirect("/")
         else:
             flash("Tarkista tunnuksesi kirjoitusasu", "warning")
             return redirect("/login")
@@ -61,16 +83,28 @@ def handle_login():
         flash("Virheellinen syöte yhdessä tai useammassa kentistä","error")
         return redirect("/login")
 
+@application.route("/logout")
+def logout():
+    del session["username"]
+    flash("Kirjauduit ulos palvelusta onnistuneesti")
+    return redirect('/')
+
 @application.route("/password")
 def password():
-    localized = ["Salasanan vaihtaminen","Käyttäjänimi","Salasana","Uusi salasana","Toista uusi salasana","Vaihda salasana"]
-    return render_template("password_change.html",
-      text=localized[0],
-      username=localized[1],
-      password=localized[2],
-      new_password=localized[3],
-      repeat_new_password=localized[4],
-      submit=localized[3])
+    sql = "SELECT count(*) FROM Users"
+    result = DB.session.execute(sql)
+    data = result.fetchall()[0]
+    if data[0] == 0:
+        return redirect("/init_site")
+    else:
+        localized = ["Salasanan vaihtaminen","Käyttäjänimi","Salasana","Uusi salasana","Toista uusi salasana","Vaihda salasana"]
+        return render_template("password_change.html",
+          text=localized[0],
+          username=localized[1],
+          password=localized[2],
+          new_password=localized[3],
+          repeat_new_password=localized[4],
+          submit=localized[3])
 
 @application.route("/handle_password_change", methods=["POST"])
 def handle_password_change():
@@ -110,14 +144,18 @@ def handle_password_change():
 
 @application.route("/register")
 def register():
-    localized = ["Rekisteröityminen palveluun","Käyttäjänimi","Salasana","Toista salasana","Rekisteröitymistunnus","Rekisteröidy"]
-    return render_template("registration.html",
-      text=localized[0],
-      username=localized[1],
-      password=localized[2],
-      repeat_password=localized[3],
-      registration_code=localized[4],
-      submit=localized[5])
+    _user = session.get("username")
+    if _user != None:
+        return redirect("/")
+    else:
+        localized = ["Rekisteröityminen palveluun","Käyttäjänimi","Salasana","Toista salasana","Rekisteröitymistunnus","Rekisteröidy"]
+        return render_template("registration.html",
+          text=localized[0],
+          username=localized[1],
+          password=localized[2],
+          repeat_password=localized[3],
+          registration_code=localized[4],
+          submit=localized[5])
 
 @application.route("/handle_registration", methods=["POST"])
 def handle_registration():

@@ -1,5 +1,8 @@
 {% extends "layout.html" %}
 {% block body %}
-  <h1>ChatList</h1>
-  <p>{{ text }}!</p>
+  {% if session.username %}
+      <p>{{ text }}, {{ session.username }}!</p>
+  {% else %}
+      <p>{{ text }}!</p>
+  {% endif %}
 {% endblock %}

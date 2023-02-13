@@ -1,0 +1,20 @@
+<!doctype html>
+<meta charset="utf-8" />
+<link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+<link rel="stylesheet" href="../styles/categories.css">
+<meta
+  name="description"
+  content="ChatList - manage your chat link collection"
+/>
+<link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+<title>ChatList</title>
+{% with messages = get_flashed_messages(with_categories = True) %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for category, message in messages %}
+      <li class="{{ category }}">{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+{% block body %}{% endblock %}

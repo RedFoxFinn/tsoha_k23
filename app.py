@@ -1,48 +1,71 @@
 from flask import Flask
-from flask import abort, redirect, render_template, request, session
+from flask import abort, redirect, render_template, request, session, flash
 from flask_sqlalchemy import SQLAlchemy
 
-from modules.config_module import DB_URL, REG_CODE
+from modules.config_module import DB_URL, REG_CODE, SECRET_KEY
 
+from tools.validate_input import input_validation, validate_reg_or_log
 from tools.password_tools import validate_password_on_login, validate_passwords_on_change, validate_password_on_register
 
 application = Flask(__name__)
+application.config["SECRET_KEY"] = SECRET_KEY
 application.config["SQLALCHEMY_DATABASE_URI"] = DB_URL
 DB = SQLAlchemy(application)
 
 @application.route("/")
 def frontpage():
-    localized = "Tervetuloa käyttämään ChatListiä"
-    return render_template("index.html", message=localized)
+    sql = "SELECT count(*) FROM Users"
+    result = DB.session.execute(sql)
+    data = result.fetchall()[0]
+    if data[0] == 0:
+        flash("Aloitetaan sovelluksen alustaminen...","info")
+        return redirect("/init_site")
+    else:
+        localized = "Tervetuloa käyttämään ChatListiä"
+        return render_template("index.html", text=localized)
 
 @application.route("/init_site")
 def init_site():
     localized = ["Tervetuloa käyttämään ChatListiä", "Aloita alustan käyttöönotto määrittämällä ylläpitäjä", "Aloita määritys"]
-    return render_template("initialization.html", message=localized[0], notice=localized[1], submit=localized[2])
+    return render_template("initialization.html", text=localized[0], notice=localized[1], submit=localized[2])
 
 @application.route("/login")
 def login():
     localized = ["Kirjautuminen palveluun","Käyttäjänimi","Salasana","Kirjaudu"]
     return render_template("login.html",
-      message=localized[0],
+      text=localized[0],
       username=localized[1],
       password=localized[2],
       submit=localized[3])
 
 @application.route("/handle_login", methods=["POST"])
 def handle_login():
-    login_data = {"un":request.form["uname"]}
-    sql = f"SELECT id, uname, pw_hash FROM Users WHERE uname=:un"
-    result = DB.session.execute(sql, login_data)
-    data = result.fetchone()
-    validation_result = validate_password_on_login(request.form["password"], data[2])
-    return redirect("/") if validation_result else redirect("/login")
+    __fields = [request.form['uname'], request.form['password']]
+    __field_validations = [
+      1 if validate_reg_or_log(__fields[0], "USERNAME") else 0,
+      1 if validate_reg_or_log(__fields[1], "PASSWORD") else 0
+    ]
+    if sum(__field_validations) == 2 and sum([1 if input_validation(f) else 0 for f in __fields]) == 0:
+        login_data = {"un":__fields[0]}
+        sql = f"SELECT id, uname, pw_hash FROM Users WHERE uname=:un"
+        result = DB.session.execute(sql, login_data)
+        data = result.fetchone()
+        validation_result = validate_password_on_login(__fields[1], data[2])
+        if validation_result:
+            flash("Kirjautuminen onnistui!", "info")
+            return  redirect("/")
+        else:
+            flash("Tarkista tunnuksesi kirjoitusasu", "warning")
+            return redirect("/login")
+    else:
+        flash("Virheellinen syöte yhdessä tai useammassa kentistä","error")
+        return redirect("/login")
 
 @application.route("/password")
 def password():
     localized = ["Salasanan vaihtaminen","Käyttäjänimi","Salasana","Uusi salasana","Toista uusi salasana","Vaihda salasana"]
     return render_template("password_change.html",
-      message=localized[0],
+      text=localized[0],
       username=localized[1],
       password=localized[2],
       new_password=localized[3],
@@ -51,31 +74,45 @@ def password():
 
 @application.route("/handle_password_change", methods=["POST"])
 def handle_password_change():
+    __fields = [request.form['uname'], request.form['password'], request.form['new_password'], request.form['new_password_repeat']]
+    __field_validations = [
+      1 if validate_reg_or_log(__fields[0], "USERNAME") else 0,
+      1 if validate_reg_or_log(__fields[1], "PASSWORD") else 0,
+      1 if validate_reg_or_log(__fields[2], "PASSWORD") else 0,
+      1 if validate_reg_or_log(__fields[3], "PASSWORD") else 0
+    ]
     __user_data_request = f"SELECT id, uname, pw_hash FROM Users WHERE uname=:un"
     __user_data_update = f"UPDATE Users SET pw_hash=:hash WHERE uname=:un"
-    login_data = {"un":request.form["uname"]}
-    user_result = DB.session.execute(__user_data_request, login_data)
-    user_data = user_result.fetchone()
-    validation_result = validate_passwords_on_change(
-      login_data["password"],
-      user_data[2],
-      request.form["new_password"],
-      request.form["new_password_repeat"])
-    if validation_result != None:
-        new_data = {"un": user_data[1], "hash": validation_result}
-        try:
-            DB.session.execute(__user_data_update, new_data)
-            return redirect("/login")
-        except:
+    if sum(__field_validations) == 4 and sum([1 if input_validation(f) else 0 for f in __fields]) == 0:
+        login_data = {"un":__fields[0]}
+        user_result = DB.session.execute(__user_data_request, login_data)
+        user_data = user_result.fetchone()
+        validation_result = validate_passwords_on_change(
+          __fields[1],
+          user_data[2],
+          __fields[2],
+          __fields[3])
+        if validation_result != None:
+            new_data = {"un": user_data[1], "hash": validation_result}
+            try:
+                DB.session.execute(__user_data_update, new_data)
+                DB.session.commit()
+                flash("Salasanan vaihto onnistui", "info")
+                return redirect("/login")
+            except:
+                return redirect("/password")
+        else:
+            flash("Tarkista kirjoittamasi kentät", "warning")
             return redirect("/password")
     else:
+        flash("Virheellinen syöte yhdessä tai useammassa kentistä","error")
         return redirect("/password")
 
 @application.route("/register")
 def register():
     localized = ["Rekisteröityminen palveluun","Käyttäjänimi","Salasana","Toista salasana","Rekisteröitymistunnus","Rekisteröidy"]
     return render_template("registration.html",
-      message=localized[0],
+      text=localized[0],
       username=localized[1],
       password=localized[2],
       repeat_password=localized[3],
@@ -84,31 +121,42 @@ def register():
 
 @application.route("/handle_registration", methods=["POST"])
 def handle_registration():
-    form_data = [
+    __fields = [
       request.form["new_username"],
       request.form["new_password"],
       request.form["new_password_repeat"],
       request.form["registration_code"]
     ]
-    validation = validate_password_on_register(form_data[1], form_data[2])
-    __user_data_insert = "INSERT INTO Users (uname, pw_hash) VALUES (:un, :hash)"
-    __user_data_request = "SELECT id, uname FROM Users WHERE uname=:un"
-    if form_data[3] == REG_CODE:
-        insert_data = {"un": form_data[0], "hash": validation}
-        try:
-            DB.session.execute(__user_data_insert, insert_data)
+    __field_validations = [
+      1 if validate_reg_or_log(__fields[0], "USERNAME") else 0,
+      1 if validate_reg_or_log(__fields[1], "PASSWORD") else 0,
+      1 if validate_reg_or_log(__fields[2], "PASSWORD") else 0
+    ]
+    if sum([1 if input_validation(f) else 0 for f in __fields]) == 0 and sum(__field_validations) == 3:
+        validation = validate_password_on_register(__fields[1], __fields[2])
+        __user_data_insert = "INSERT INTO Users (uname, pw_hash) VALUES (:un, :hash)"
+        __user_data_request = "SELECT id, uname FROM Users WHERE uname=:un"
+        if __fields[3] == REG_CODE:
+            insert_data = {"un": __fields[0], "hash": validation}
+            try:
+                DB.session.execute(__user_data_insert, insert_data)
+                DB.session.commit()
+                flash("Rekisteröityminen onnistui", "info")
+            except:
+                flash("Käyttäjätunnus on jo käytössä", "warning")
+                return redirect("/register")
+        request_data = {"un": __fields[0]}
+        user_result = DB.session.execute(__user_data_request, request_data)
+        user_data = user_result.fetchone()
+        if user_data[0] == 1:
+            admin_data = {"uid": user_data[0]}
+            __set_admin_sql = f"INSERT INTO Admins (user_id, superuser) VALUES (:uid, True)"
+            DB.session.execute(__set_admin_sql, admin_data)
             DB.session.commit()
-        except:
-            return redirect("/register")
-    request_data = {"un": form_data[0]}
-    user_result = DB.session.execute(__user_data_request, request_data)
-    user_data = user_result.fetchone()
-    if user_data[0] == 1:
-        admin_data = {"uid": user_data[0]}
-        __set_admin_sql = f"INSERT INTO Admins (user_id, superuser) VALUES (:uid, True)"
-        DB.session.execute(__set_admin_sql, admin_data)
-        DB.session.commit()
-    return redirect("/login")
+        return redirect("/login")
+    else:
+        flash("Virheellinen syöte yhdessä tai useammassa kentistä","error")
+        return redirect("/register")
 
 @application.route("/management")
 def show():

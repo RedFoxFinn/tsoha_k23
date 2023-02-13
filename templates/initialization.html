@@ -1,20 +1,9 @@
-<!DOCTYPE html>
-<head>
-  <meta charset="utf-8" />
-  <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-  <meta
-    name="description"
-    content="ChatList - manage your chat link collection"
-  />
-  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-  <title>ChatList</title>
-</head>
-<body>
+{% extends "layout.html" %}
+{% block body %}
   <h1>ChatList</h1>
-  <p>{{ message }}!</p>
+  <p>{{ text }}!</p>
   <h2>{{ notice }}</h2>
   <form action="/register" method="get">
     <input type="submit" value="{{submit}}">
   </form>
-</body>
-</html>
+{% endblock %}

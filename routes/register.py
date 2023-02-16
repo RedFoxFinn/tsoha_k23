@@ -44,12 +44,9 @@ def handle_registration():
                 flash("Käyttäjätunnus on jo käytössä","info")
                 return redirect("/register")
             else:
-                print(_result)
                 flash("Rekisteröityminen onnistui!","success")
-                if _result[0] == 1:
-                    print("goes here...")
+                if _result[0] == 1 or users.count() == 1:
                     _admin_result = admins.register_admin(_result[0])
-                    print("and here...",_admin_result)
                     if _admin_result: flash("Tunnus rekisteröity pääkäyttäjäksi","success")
                 return redirect("/login")
         else:

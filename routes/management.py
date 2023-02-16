@@ -4,6 +4,7 @@ from flask import abort,redirect, render_template, request, session, flash
 from app import application
 from modules.database_module import DB
 import modules.chat_module as chats
+import modules.group_module as groups
 import modules.topics_module as topics
 from tools.validate_input import input_validation
 
@@ -160,17 +161,16 @@ def group_management():
         flash("Toiminto vaatii kirjautumisen","warning")
         return redirect("/login")
 
-@application.route("/management/groups/<int:id>", methods=["POST"])
+@application.route("/management/groups/<int:id>")
 def manage_single_group(id:int):
-    _old_name = request.form["gname"]
-    _old_restriction = request.form["restriction"]
+    _group = groups.get_group_by_id(id)
     _user = session.get("username")
     _status = session.get("user_status")
     if _status == None or _status not in ["ADMIN","SUPER"]:
         flash("Toiminto vaatii ylläpitäjän oikeudet")
         return redirect("/management")
     elif _status in ["ADMIN","SUPER"]:
-        old_data = {"old_name":_old_name,"old_restriction":_old_restriction,"id":id}
+        old_data = {"old_name":_group[1],"old_restriction":_group[2],"id":_group[0]}
         localized = {
           "text":"Hallintapaneeli",
           "current_mode": "Ryhmän hallinta",

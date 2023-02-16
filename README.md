@@ -71,6 +71,45 @@ Nyt kaikki on valmista ja sovellus voidaan käynnistää komennolla
 
 Sovellus toimii nyt tietokoneella, oletuksena verkkoselaimen osoitteessa `http://localhost:5000/`
 
+### Sovelluksen käyttäminen
+
+Kun sovellus otetaan käyttöön ja sillä ei ole vielä määritettyjä käyttäjiä, ohjautuu se ensimmäiseksi osoitteeseen `http://localhost:5000/init_site`.
+
+[Sovelluksen käyttöönottoruutu](https://github.com/RedFoxFinn/ChatList/tree/main/docs/init_required.png | width=300)
+
+Klikkaamalla painiketta 'Aloita määritys' sovellus ohjautuu käyttäjä rekisteröitymissivulle `http://localhost:5000/register`.
+
+[Sovelluksen rekisteröitymisruutu](https://github.com/RedFoxFinn/ChatList/tree/main/docs/registration.png | width=300)
+
+Ensimmäisenä rekisteröityvästä käyttäjästä tulee automaattisesti pääkäyttäjä (Admin), jolla on lisäksi superuser-status. Tämä status vaaditaan mm. ylläpitäjien muokkaukseen ja muokkauspyyntöjen hyväksyntään.
+
+Rekisteröitymisen jälkeen näytetään viesti rekisteröitymisen onnistumisesta ja käyttäjä ohjataan kirjautumissivulle `http://localhost:5000/login`.
+
+[Sovelluksen kirjautumisruutu](https://github.com/RedFoxFinn/ChatList/tree/main/docs/login.png | width=300)
+
+Kirjautumisen onnistumisesta näytetään käyttäjälle viesti ja hänet ohjataan etusivulle.
+
+[Sovelluksen etusivu](https://github.com/RedFoxFinn/ChatList/tree/main/docs/frontpage.png | width=300)
+
+Pääkäyttäjille sovelluksessa on mahdollisuus käyttää hallintatyökaluja, joihin kuuluvat ryhmien (toimialueen kaltainen ominaisuus), keskusteluryhmien ja ylläpitäjien hallinta.
+
+Peruskäyttäjille luodaan keskusteluryhmien lisäämiseen ominaisuus myöhemmin. Samoin kuin ylläpitäjien hallinnan lisäksi käyttäjähallinta.
+
+[Sovelluksen hallintanäkymän navigointi](https://github.com/RedFoxFinn/ChatList/tree/main/docs/management.png | width=300)
+
+Ryhmien hallinnassa pääkäyttäjät voivat luoda uusia ryhmiä tai siirtyä muokkaamaan olemassaolevan ryhmän ominaisuuksia (nimi, rajoitustaso).
+
+Keskusteluryhmien hallinnassa pääkäyttäjä pystyy lisäämään keskusteluryhmien ylläpitäjiä (nimimerkki + linkki privaattikeskusteluun) sekä lisäämään uusia keskusteluryhmiä.
+
+Keskusteluryhmien listaus näytetään myös näkymässä, mutta etusivusta poiketen laajemmilla tiedoilla ja mahdollisuudella siirtyä keskusteluryhmän tietojen muokkaukseen.
+
+Sovelluksessa on myös kaikille näkyvä osio, statistiikka. Se nimensä mukaisesti esittää yksinkertaisia tilastotietoja sovelluksesta.
+
+[Sovelluksen tilastotietonäkymä](https://github.com/RedFoxFinn/ChatList/tree/main/docs/statistics.png | width=300)
+
+Kaikille eivät samat tiedot näy, esimerkiksi kirjautumattomille näytetään vain keskusteluryhmien kokonaismäärä ja aiheiden kokonaismäärä.
+
+Sovelluksessa on lisäksi näkymä salasanan vaihtamiseen (ei toimi vielä oikein...)
 ### Tietokanta
 
 Sovellus käyttää PostgreSQL-tietokantaa tiedon pysyväissäilytykseen.

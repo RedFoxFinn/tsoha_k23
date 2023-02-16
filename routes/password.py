@@ -56,8 +56,10 @@ def handle_password_change():
             try:
                 DB.session.execute(__user_data_update, new_data)
                 DB.session.commit()
+                del session["username"]
+                del session["user_status"]
+                del session["csrf_token"]
                 flash("Salasanan vaihto onnistui", "success")
-                session.pop("username",None)
                 return redirect("/login")
             except:
                 flash("Salasanan vaohto epäonnistui. Yritä uudelleen.","warning")

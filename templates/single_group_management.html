@@ -1,0 +1,19 @@
+{% extends "management.html" %}
+{% block section %}
+  <h2>{{ local.current_mode }}</h2>
+  {% if session.username and session.user_status == "SUPER" or session.user_status == "ADMIN" %}
+    <form action="/handle_group_update" method="POST" class="vertical">
+      <input hidden id="id" name="id" value={{group.id}} type="number">
+      <label for="gname">{{ local.group_name }}</label>
+      <input name="gname" id="gname" type="text" value="{{ group.old_name }}"></br>
+      <label for="restriction">{{ local.restriction_level }}</label>
+      <select name="restriction" id="restriction">
+        {% for value,label in restriction_options %}
+          <option value="{{ value }}">{{ label }}</option>
+        {% endfor %}
+      </select></br>
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <input type="submit" value="{{ local.submit }}">
+    </form>
+  {% endif %}
+{% endblock %}

@@ -1,10 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
   <h2>{{ text }}</h2>
-  {% if error %}
-    <p class=error><strong>Error:</strong> {{ error }}
-  {% endif %}
-  <form action="/handle_login" method="POST">
+  <form action="/handle_login" method="POST" class="vertical">
     <label for="uname">{{ username }}</label>
     <input type="text" name="uname" id="uname"><br/>
     <label for="password">{{ password }}</label>

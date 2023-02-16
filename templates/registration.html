@@ -1,18 +1,15 @@
 {% extends "layout.html" %}
 {% block body %}
   <h2>{{ text }}</h2>
-  {% if error %}
-    <p class=error><strong>Error:</strong> {{ error }}
-  {% endif %}
-  <form action="/handle_registration" method="POST">
+  <form action="/handle_registration" method="POST" class="vertical">
     <label for="new_username">{{ username }}</label>
-    <input type="text" name="new_username" id="new_username"><br/>
+    <input type="text" name="new_username" id="new_username" required><br/>
     <label for="new_password">{{ password }}</label>
-    <input type="password" name="new_password" id="new_password"><br/>
+    <input type="password" name="new_password" id="new_password" required><br/>
     <label for="new_password_repeat">{{ repeat_password }}</label>
-    <input type="password" name="new_password_repeat" id="new_password_repeat"><br/>
+    <input type="password" name="new_password_repeat" id="new_password_repeat" required><br/>
     <label for="registration_code">{{ registration_code }}</label>
-    <input type="password" name="registration_code" id="registration_code"><br/>
+    <input type="password" name="registration_code" id="registration_code" required><br/>
     <input type="submit" value={{submit}}>
   </form>
 {% endblock %}

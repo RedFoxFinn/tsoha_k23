@@ -1,0 +1,10 @@
+{% block body %}
+  <tr>
+    <td>{{ id }}</td>
+    <td>{{ name }}</td>
+    <td>{{ restriction }}</td>
+    {% if session.username and (session.user_status == 'ADMIN' or session.user_status == 'SUPER') %}
+      <td><a href="/management/groups/{{id}}">Muokkaa</a></td>
+    {% endif %}
+  </tr>
+{% endblock %}

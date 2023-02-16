@@ -1,0 +1,16 @@
+{% block body %}
+  <table>
+  <tr>
+    {% if management == "True" %}<th>id</th>{% endif %}
+    <th>name</th>
+    <th>topic</th>
+    {% if management == "True" %}<th>group</th>{% endif %}
+    <th>link</th>
+    {% if management == "True" %}<th>restriction-level</th>{% endif %}
+    {% if management == "True" %}<th>edit?</th>{% endif %}
+  </tr>
+  {% for id,name,link,topic,group,restriction in showable %}
+    {% include "chat.html" %}
+  {% endfor %}
+  </table>
+{% endblock %}

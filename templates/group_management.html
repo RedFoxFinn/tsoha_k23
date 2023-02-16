@@ -1,0 +1,21 @@
+{% extends "management.html" %}
+{% block section %}
+  <h2>{{ local.current_mode }}</h2>
+  {% if session.username %}
+    <h3>{{ local.add_new }}</h3>
+    <form action="/handle_group_adding" method="POST" class="vertical">
+      <label for="gname">{{ local.group_name }}</label>
+      <input name="gname" id="gname" type="text" required></br>
+      <label for="restriction">{{ local.restriction_level }}</label>
+      <select name="restriction" id="restriction" required>
+        {% for value,label in restriction_options %}
+          <option value="{{ value }}">{{ label }}</option>
+        {% endfor %}
+      </select></br>
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <input type="submit" value="{{ local.submit }}">
+    </form>
+  {% endif %}
+  <h3>{{ local.listing }}</h3>
+  {% include "group_list.html" %}
+{% endblock %}

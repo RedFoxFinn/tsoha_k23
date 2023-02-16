@@ -12,10 +12,16 @@
 <h1>{{ app_name }}</h1>
 <nav>
   <a href="/">Etusivu</a>
-  <a href="/login">Kirjautuminen</a>
-  <a href="/register">Rekisteröityminen</a>
-  <a href="/password">Salasanan vaihto</a>
+  {% if not session.username %}
+    <a href="/login">Kirjautuminen</a>
+    <a href="/register">Rekisteröityminen</a>
+  {% endif %}
+  {% if session.username and session.user_status == "ADMIN" or session.user_status == "SUPER" %}
+    <a href="/management">Hallinta</a>
+  {% endif %}
+  <a href="/statistics">Statistiikka</a>
   {% if session.username %}
+    <a href="/password">Salasanan vaihto</a>
     <a href="/logout">Kirjaudu ulos</a>
   {% endif %}
 </nav>

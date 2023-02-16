@@ -1,0 +1,46 @@
+{% extends "management.html" %}
+{% block section %}
+  <h2>{{ local.current_mode }}</h2>
+  {% if session.username %}
+    <h3>{{ local.add_moderator }}</h3>
+    <form action="/handle_moderator_adding" method="POST" class="vertical">
+      <label for="handle">{{ local.handle }}</label>
+      <input name="handle" id="handle" type="text" required>
+      <label for="chat_link">{{ local.chat_link }}</label>
+      <input name="chat_link" id="chat_link" type="text" required>
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <input type="submit" value="{{ local.mod_submit }}">
+    </form>
+    <h3>{{ local.add_new }}</h3>
+    <form action="/handle_chat_adding" method="POST" class="vertical">
+      <label for="cname">{{ local.chat_name }}</label>
+      <input name="cname" id="cname" type="text" required></br>
+      <label for="topic">{{ local.topic }}</label>
+      <input name="topic" id="topic" list="topic_list" required>
+      <datalist id="topic_list">
+        {% for value,label in topic_options %}
+          <option value="{{ value }}">{{ label }}</option>
+        {% endfor %}
+      </datalist></br>
+      <label for="group">{{ local.group }}</label>
+      <input name="group" id="group" list="group_list" required>
+      <datalist id="group_list">
+        {% for value,label in group_options %}
+          <option value="{{ value }}">{{ label }}</option>
+        {% endfor %}
+      </datalist></br>
+      <label for="link">{{ local.link }}</label>
+      <input name="link" id="link" type="text" required>
+      <label for="moderators">{{ local.moderators }}</label>
+      <select name="moderators" id="moderators" multiple required>
+        {% for value,label in moderator_options %}
+          <option value="{{ value }}">{{ label }}</option>
+        {% endfor %}
+      </select>
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <input type="submit" value="{{ local.submit }}">
+    </form>
+  {% endif %}
+  <h3>{{ local.listing }}</h3>
+  {% include "chat_list.html" %}
+{% endblock %}

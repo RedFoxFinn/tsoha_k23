@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block body %}
+  <h2>{{ local.text }}</h2>
+  {% if session.username and session.user_status == "SUPER" or session.user_status == "ADMIN" %}
+    <div>
+      <a href="/management/groups">{{ local.groups }}</a>
+      <a href="/management/chats">{{ local.chats }}</a>
+      <a href="/management/admins">{{ local.admins }}</a>
+    </div>
+  {% endif %}
+  {% block section %}{% endblock %}
+{% endblock %}

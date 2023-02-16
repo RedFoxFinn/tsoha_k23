@@ -1,0 +1,13 @@
+{% block body %}
+  <tr>
+    {% if management == "True" %}<td>{{ id }}</td>{% endif %}
+    <td>{{ name }}</td>
+    <td>{{ topic }}</td>
+    {% if management == "True" %}<td>{{ group }}</td>{% endif %}
+    {% if restriction != "AGE" or restriction != "SEC" or management == "True" %}<td>{{ link }}</td>{% else %}<td>ei saatavilla</td>{% endif %}
+    {% if management == "True" %}<td>{{ restriction }}</td>{% endif %}
+    {% if session.username and (session.user_status == 'ADMIN' or session.user_status == 'SUPER') and management == "True" %}
+      <td><a href="/management/chats/{{id}}">Muokkaa</a></td>
+    {% endif %}
+  </tr>
+{% endblock %}

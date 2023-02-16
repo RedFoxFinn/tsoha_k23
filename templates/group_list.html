@@ -1,0 +1,12 @@
+{% block body %}
+  <table>
+  <tr>
+    <th>id</th>
+    <th>name</th>
+    <th>restriction</th>
+  </tr>
+  {% for id,name,restriction in groups %}
+    {% include "group.html" %}
+  {% endfor %}
+  </table>
+{% endblock %}

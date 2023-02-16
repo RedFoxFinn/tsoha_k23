@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block body %}
+  <h2>{{ local.text }}</h2>
+  <ul>
+  {% for category,count in stats %}
+    <li>{{ category }}: {{ count }}</li>
+  {% endfor %}
+  </ul>
+{% endblock %}

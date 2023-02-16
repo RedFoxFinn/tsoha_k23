@@ -222,3 +222,7 @@ def handle_group_update():
     else:
         flash("Virheellinen syöte yhdessä tai useammassa kentistä","error")
         return redirect("/management/groups")
+
+@application.route("/management/admins")
+def admin_management():
+    return "admin management will eventually be here. Soon<sup>TM</sup>"

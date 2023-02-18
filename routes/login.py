@@ -46,7 +46,7 @@ def handle_login():
             session["csrf_token"] = secrets.token_hex(16)
             if _admin_data:
                 session["user_status"] = "SUPER" if _admin_data[2] else\
-                "ADMIN"
+                    "ADMIN"
             else:
                 session["user_status"] = "USER"
             flash("Kirjautuminen onnistui!", "success")

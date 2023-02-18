@@ -10,7 +10,7 @@ def start(ctx):
 @task
 def format(ctx):
     ctx.run(
-        "autopep8 $(git ls-files '**.py*') --in-place --exclude='./venv/*'", pty=True)
+        "autopep8 $(git ls-files '**.py*') --in-place --exclude='./venv/*','app.py'", pty=True)
 
 
 @task

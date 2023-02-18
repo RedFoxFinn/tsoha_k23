@@ -4,8 +4,8 @@ from flask import abort, redirect, render_template, request, session, flash
 from app import application
 from tools.database_module import DB
 from tools import chat_module as chats,\
-                  group_module as groups,\
-                  topics_module as topics
+    group_module as groups,\
+    topics_module as topics
 from tools.validate_input import input_validation
 
 _admin_levels = ["ADMIN", "SUPER"]
@@ -104,7 +104,7 @@ def handle_chat_adding():
         request.form["moderators"]
     ]
     _input_validations = [
-      1 if input_validation(f) else 0 for f in _fields
+        1 if input_validation(f) else 0 for f in _fields
     ]
     if sum(_input_validations) == 0:
         _fields[1] = topics.add_topic(_fields[1])

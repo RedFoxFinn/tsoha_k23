@@ -11,7 +11,8 @@ def register_admin(uid: int, super: bool = False):
     except:
         return False
 
-def check_admin(uid:int):
+
+def check_admin(uid: int):
     _admin_check_sql = f"SELECT id, user_id, superuser FROM Admins WHERE user_id={uid}"
     _admin_check_result = DB.session.execute(_admin_check_sql)
     _admin_data = _admin_check_result.fetchone()

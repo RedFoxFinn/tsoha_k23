@@ -1,6 +1,7 @@
 
 from tools.database_module import DB
 
+
 def register(new_username: str, new_password_hash: str):
     _user_data_insert = "INSERT INTO Users (uname, pw_hash) VALUES (:un, :hash)"
     _user_data_request = "SELECT id, uname FROM Users WHERE uname=:un"

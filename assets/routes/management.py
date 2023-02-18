@@ -3,9 +3,9 @@ from flask import abort, redirect, render_template, request, session, flash
 
 from app import application
 from modules import database_module as database,\
-                    chat_module as chats,\
-                    group_module as groups,\
-                    topics_module as topics
+    chat_module as chats,\
+    group_module as groups,\
+    topics_module as topics
 from tools.validate_input import input_validation
 
 _admin_levels = ["ADMIN", "SUPER"]
@@ -196,7 +196,7 @@ def manage_single_group(id_value: int):
             local=localized,
             restriction_options=_restriction_opts,
             group=old_data)
-    flash("Toiminto vaatii kirjautumisen pääkäyttäjänä","info")
+    flash("Toiminto vaatii kirjautumisen pääkäyttäjänä", "info")
     return redirect("/login")
 
 

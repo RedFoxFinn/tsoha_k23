@@ -10,6 +10,7 @@ from tools.validate_input import input_validation
 
 _admin_levels = ["ADMIN", "SUPER"]
 
+
 @application.route("/management")
 def management():
     _user = session.get("username")
@@ -17,7 +18,6 @@ def management():
         flash("Toiminto vaatii kirjautumisen", "warning")
         return redirect("/login")
     _status = session.get("user_status")
-    print(_user, _status)
     if _status not in _admin_levels:
         flash("Toiminto vaatii ylläpitäjän oikeudet", "error")
         return redirect("/")
@@ -94,7 +94,7 @@ def manage_single_chat(id_value: int):
 
 @application.route("/handle_chat_adding", methods=["POST"])
 def handle_chat_adding():
-    if request.form["csrf_token"] is not session.get("csrf_token"):
+    if request.form["csrf_token"] != session.get("csrf_token"):
         return abort(403)
     _fields = [
         request.form["cname"],
@@ -103,7 +103,10 @@ def handle_chat_adding():
         request.form["link"],
         request.form["moderators"]
     ]
-    if (1 if input_validation(f) else 0 for f in _fields) == 0:
+    _input_validations = [
+      1 if input_validation(f) else 0 for f in _fields
+    ]
+    if sum(_input_validations) == 0:
         _fields[1] = topics.add_topic(_fields[1])
         input_data = {"cname": _fields[0], "topic": int(_fields[1]), "group": int(
             _fields[2]), "link": _fields[3], "moderators": [int(mod) for mod in _fields[4]]}
@@ -118,14 +121,18 @@ def handle_chat_adding():
 
 @application.route("/handle_moderator_adding", methods=["POST"])
 def handle_moderator_adding():
-    if request.form["csrf_token"] is not session.get("csrf_token"):
+    if request.form["csrf_token"] != session.get("csrf_token"):
         return abort(403)
     _fields = [request.form["handle"], request.form["chat_link"]]
-    if (1 if input_validation(f) else 0 for f in _fields) == 0:
+    _input_validations = [
+        1 if input_validation(f) else 0 for f in _fields
+    ]
+    if sum(_input_validations) == 0:
         input_data = {"handle": _fields[0], "chat_link": _fields[1]}
         sql = "INSERT INTO Moderators (handle,chat_link) VALUES (:handle,:chat_link)"
         try:
             DB.session.execute(sql, input_data)
+            DB.session.commit()
             flash("Ylläpitäjän lisääminen onnistui", "success")
             return redirect("/management/chats")
         except:   # pylint: disable=bare-except
@@ -194,16 +201,19 @@ def manage_single_group(id_value: int):
             local=localized,
             restriction_options=_restriction_opts,
             group=old_data)
-    flash("Toiminto vaatii kirjautumisen pääkäyttäjänä","info")
+    flash("Toiminto vaatii kirjautumisen pääkäyttäjänä", "info")
     return redirect("/login")
 
 
 @application.route("/handle_group_adding", methods=["POST"])
 def handle_group_adding():
-    if request.form["csrf_token"] is not session.get("csrf_token"):
+    if request.form["csrf_token"] != session.get("csrf_token"):
         return abort(403)
     _fields = [request.form["gname"], request.form["restriction"]]
-    if (1 if input_validation(f) else 0 for f in _fields) == 0:
+    _input_validations = [
+        1 if input_validation(f) else 0 for f in _fields
+    ]
+    if sum(_input_validations) == 0:
         input_data = {"gname": _fields[0], "restrict": _fields[1]}
         sql = "INSERT INTO Groups (gname,restriction) VALUES (:gname,:restrict)"
         try:
@@ -224,7 +234,10 @@ def handle_group_update():
         return abort(403)
     _fields = [request.form["gname"],
                request.form["restriction"], request.form["id"]]
-    if (1 if input_validation(f) else 0 for f in _fields) == 0:
+    _input_validations = [
+        1 if input_validation(f) else 0 for f in _fields
+    ]
+    if sum(_input_validations) == 0:
         sql = f"UPDATE Groups SET gname='{_fields[0]}',\
           restriction='{_fields[1]}' WHERE id={_fields[2]}"
         try:

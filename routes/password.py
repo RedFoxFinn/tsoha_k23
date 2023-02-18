@@ -6,6 +6,7 @@ from tools.database_module import DB
 from tools.validate_input import input_validation, validate_reg_or_log
 from tools.password_tools import validate_passwords_on_change
 
+
 @application.route("/password")
 def password():
     _user = session.get("username")
@@ -18,19 +19,19 @@ def password():
     if data[0] == 0:
         return redirect("/init_site")
     localized = ["Salasanan vaihtaminen", "Käyttäjänimi", "Salasana",
-                  "Uusi salasana", "Toista uusi salasana", "Vaihda salasana"]
+                 "Uusi salasana", "Toista uusi salasana", "Vaihda salasana"]
     return render_template("password_change.html",
-                            text=localized[0],
-                            username=localized[1],
-                            password=localized[2],
-                            new_password=localized[3],
-                            repeat_new_password=localized[4],
-                            submit=localized[3])
+                           text=localized[0],
+                           username=localized[1],
+                           password=localized[2],
+                           new_password=localized[3],
+                           repeat_new_password=localized[4],
+                           submit=localized[3])
 
 
 @application.route("/handle_password_change", methods=["POST"])
 def handle_password_change():
-    if request.form["csrf_token"] is not session.get("csrf_token"):
+    if request.form["csrf_token"] != session.get("csrf_token"):
         return abort(403)
     __fields = [request.form['username'], request.form['password'],
                 request.form['new_password'], request.form['new_password_repeat']]
@@ -42,8 +43,10 @@ def handle_password_change():
     ]
     __user_data_request = "SELECT id, uname, pw_hash FROM Users WHERE uname=:un"
     __user_data_update = "UPDATE Users SET pw_hash=:hash WHERE uname=:un"
-    if sum(__field_validations) == 4 and\
-        (1 if input_validation(f) else 0 for f in __fields) == 0:
+    _input_validations = [
+        1 if input_validation(f) else 0 for f in __fields
+    ]
+    if sum(__field_validations) == 4 and sum(_input_validations) == 0:
         login_data = {"un": __fields[0]}
         user_result = DB.session.execute(__user_data_request, login_data)
         user_data = user_result.fetchone()

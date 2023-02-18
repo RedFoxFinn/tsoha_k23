@@ -4,9 +4,10 @@ from flask import redirect, render_template, request, session, flash
 
 from app import application
 from modules import user_module as users,\
-                    admin_module as admins
+    admin_module as admins
 from tools import validate_input as validators,\
-                  password_tools as passwords
+    password_tools as passwords
+
 
 @application.route("/login", methods=["GET"])
 def login():
@@ -16,12 +17,12 @@ def login():
     if _user is not None:
         return redirect("/")
     localized = ["Kirjautuminen palveluun",
-                  "Käyttäjänimi", "Salasana", "Kirjaudu"]
+                 "Käyttäjänimi", "Salasana", "Kirjaudu"]
     return render_template("login.html",
-                            text=localized[0],
-                            username=localized[1],
-                            password=localized[2],
-                            submit=localized[3])
+                           text=localized[0],
+                           username=localized[1],
+                           password=localized[2],
+                           submit=localized[3])
 
 
 @application.route("/handle_login", methods=["POST"])
@@ -32,7 +33,7 @@ def handle_login():
         1 if validators.validate_reg_or_log(__fields[1], "PASSWORD") else 0
     ]
     if sum(__field_validations) == 2 and\
-        (1 if validators.input_validation(f) else 0 for f in __fields) == 0:
+            (1 if validators.input_validation(f) else 0 for f in __fields) == 0:
         _user_data = users.user_data(__fields[0])
         validation_result = passwords.validate_password_on_login(
             __fields[1], _user_data[2])

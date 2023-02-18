@@ -1,5 +1,5 @@
 
-from database_module import DB
+from tools.database_module import DB
 
 
 def get_groups():

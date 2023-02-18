@@ -3,8 +3,9 @@ from flask import redirect, render_template, flash, session
 
 from app import application
 from tools import config_module as config,\
-                        user_module as users,\
-                        chat_module as chats
+    user_module as users,\
+    chat_module as chats
+
 
 @application.route("/", methods=["GET"])
 def frontpage():
@@ -25,7 +26,7 @@ def frontpage():
         _chats += chats.get_login_restricted_chats()
         _chats += chats.get_age_restricted_chats()
     if session.get("username") is not None and\
-        session.get("user_status") in ["ADMIN", "SUPER"]:
+            session.get("user_status") in ["ADMIN", "SUPER"]:
         _chats += chats.get_login_restricted_chats()
         _chats += chats.get_age_restricted_chats()
         _chats += chats.get_security_restricted_chats()

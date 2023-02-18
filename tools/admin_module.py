@@ -1,24 +1,18 @@
 
 from tools.database_module import DB
 
-class Admin(DB.Model):
-    id = DB.Column(DB.Integer,primary_key=True)
-    user_id = DB.Column(DB.Integer, nullable=False)
-    superuser = DB.Column(DB.Boolean, nullable=False)
 
-    def __repr__(self):
-        return '<Admin %r>' % self.user_id
-
-def register_admin(uid: int,super:bool=False):
-    _new_admin = Admin(user_id=uid,superuser=super)
+def register_admin(uid: int, super: bool = False):
+    _admin_insert_sql = f"INSERT INTO Admins (user_id, superuser) VALUES ({uid}, True)"
     try:
-        DB.session.add(_new_admin)
+        DB.session.execute(_admin_insert_sql)
         DB.session.commit()
         return True
     except:
         return False
 
-
-def check_admin(uid: int):
-    _admin_data = Admin.query.filter_by(user_id=uid).first()
+def check_admin(uid:int):
+    _admin_check_sql = f"SELECT id, user_id, superuser FROM Admins WHERE user_id={uid}"
+    _admin_check_result = DB.session.execute(_admin_check_sql)
+    _admin_data = _admin_check_result.fetchone()
     return _admin_data

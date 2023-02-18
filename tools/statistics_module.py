@@ -1,5 +1,5 @@
 
-from database_module import DB as db
+from tools.database_module import DB as db
 
 
 def _get_admin_count():

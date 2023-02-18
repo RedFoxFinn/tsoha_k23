@@ -25,7 +25,7 @@
       <label for="group">{{ local.group }}</label>
       <input name="group" id="group" list="group_list" required>
       <datalist id="group_list">
-        {% for value,label in group_options %}
+        {% for value,label,restriction in group_options %}
           <option value="{{ value }}">{{ label }}</option>
         {% endfor %}
       </datalist></br>

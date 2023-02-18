@@ -44,8 +44,6 @@ def _calculate_forbidden_score_sql(input_value: str):
                 score_total *= rate[3]
             else:
                 score_total *= rate[1]
-            if index >= 4:
-                break
     return score_total
 
 

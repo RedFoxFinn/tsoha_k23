@@ -1,18 +1,17 @@
 
 from flask import redirect, render_template, flash, session
 
-from modules.config_module import APP_NAME
-from app import application
-import modules.user_module as users
-import modules.chat_module as chats
-
+from src.app import application
+from src.modules import config_module as config,\
+                        user_module as users,\
+                        chat_module as chats
 
 @application.route("/", methods=["GET"])
 def frontpage():
     if users.count() == 0:
         flash("Aloitetaan sovelluksen alustaminen...", "warning")
         return redirect("/init_site")
-    localized = f"Tervetuloa sovellukseen {APP_NAME}"
+    localized = f"Tervetuloa sovellukseen {config.APP_NAME}"
     headers = {
         "public": "Julkiset",
         "login": "Kirjautumalla",

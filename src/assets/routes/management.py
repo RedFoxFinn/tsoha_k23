@@ -1,11 +1,11 @@
 
 from flask import abort, redirect, render_template, request, session, flash
 
-from app import application
-from modules.database_module import DB
-import modules.chat_module as chats
-import modules.group_module as groups
-import modules.topics_module as topics
+from src.app import application
+from modules import database_module as database,\
+                    chat_module as chats,\
+                    group_module as groups,\
+                    topics_module as topics
 from tools.validate_input import input_validation
 
 _admin_levels = ["ADMIN", "SUPER"]
@@ -57,7 +57,7 @@ def chat_management():
     _group_data = groups.get_groups()
 
     _moderator_sql = "SELECT id,handle FROM Moderators"
-    _moderator_result = DB.session.execute(_moderator_sql)
+    _moderator_result = database.DB.session.execute(_moderator_sql)
     _moderator_data = _moderator_result.fetchall()
 
     _user = session.get("username")
@@ -95,7 +95,7 @@ def manage_single_chat(id_value: int):
 
 @application.route("/handle_chat_adding", methods=["POST"])
 def handle_chat_adding():
-    if request.form["csrf_token"] != session.get("csrf_token"):
+    if request.form["csrf_token"] is not session.get("csrf_token"):
         return abort(403)
     _fields = [
         request.form["cname"],
@@ -119,15 +119,15 @@ def handle_chat_adding():
 
 @application.route("/handle_moderator_adding", methods=["POST"])
 def handle_moderator_adding():
-    if request.form["csrf_token"] != session.get("csrf_token"):
+    if request.form["csrf_token"] is not session.get("csrf_token"):
         return abort(403)
     _fields = [request.form["handle"], request.form["chat_link"]]
     if (1 if input_validation(f) else 0 for f in _fields) == 0:
         input_data = {"handle": _fields[0], "chat_link": _fields[1]}
         sql = "INSERT INTO Moderators (handle,chat_link) VALUES (:handle,:chat_link)"
         try:
-            DB.session.execute(sql, input_data)
-            DB.session.commit()
+            database.DB.session.execute(sql, input_data)
+            database.DB.session.commit()
             flash("Ylläpitäjän lisääminen onnistui", "success")
             return redirect("/management/chats")
         except:   # pylint: disable=bare-except
@@ -157,7 +157,7 @@ def group_management():
     _user = session.get("username")
     if _user is not None:
         sql = "SELECT id,gname,restriction FROM Groups"
-        result = DB.session.execute(sql)
+        result = database.DB.session.execute(sql)
         data = result.fetchall()
         return render_template(
             "group_management.html",
@@ -202,23 +202,22 @@ def manage_single_group(id_value: int):
 
 @application.route("/handle_group_adding", methods=["POST"])
 def handle_group_adding():
-    if request.form["csrf_token"] != session.get("csrf_token"):
+    if request.form["csrf_token"] is not session.get("csrf_token"):
         return abort(403)
     _fields = [request.form["gname"], request.form["restriction"]]
     if (1 if input_validation(f) else 0 for f in _fields) == 0:
         input_data = {"gname": _fields[0], "restrict": _fields[1]}
         sql = "INSERT INTO Groups (gname,restriction) VALUES (:gname,:restrict)"
         try:
-            DB.session.execute(sql, input_data)
-            DB.session.commit()
+            database.DB.session.execute(sql, input_data)
+            database.DB.session.commit()
             flash("Ryhmän lisääminen onnistui", "success")
             return redirect("/management/groups")
         except:   # pylint: disable=bare-except
             flash("Virheellinen syöte yhdessä tai useammassa kentistä", "warning")
             return redirect("/management/groups")
-    else:
-        flash("Virheellinen syöte yhdessä tai useammassa kentistä", "error")
-        return redirect("/management/groups")
+    flash("Virheellinen syöte yhdessä tai useammassa kentistä", "error")
+    return redirect("/management/groups")
 
 
 @application.route("/handle_group_update", methods=["POST"])
@@ -231,16 +230,15 @@ def handle_group_update():
         sql = f"UPDATE Groups SET gname='{_fields[0]}',\
           restriction='{_fields[1]}' WHERE id={_fields[2]}"
         try:
-            DB.session.execute(sql)
-            DB.session.commit()
+            database.DB.session.execute(sql)
+            database.DB.session.commit()
             flash("Ryhmän päivittämimnen onnistui", "success")
             return redirect("/management/groups")
         except:   # pylint: disable=bare-except
             flash("Virheellinen syöte yhdessä tai useammassa kentistä", "warning")
             return redirect("/management/groups")
-    else:
-        flash("Virheellinen syöte yhdessä tai useammassa kentistä", "error")
-        return redirect("/management/groups")
+    flash("Virheellinen syöte yhdessä tai useammassa kentistä", "error")
+    return redirect("/management/groups")
 
 
 @application.route("/management/admins")

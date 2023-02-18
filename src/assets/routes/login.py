@@ -2,12 +2,11 @@
 import secrets
 from flask import redirect, render_template, request, session, flash
 
-from app import application
-import modules.user_module as users
-import modules.admin_module as admins
-from tools.validate_input import input_validation, validate_reg_or_log
-from tools.password_tools import validate_password_on_login
-
+from src.app import application
+from modules import user_module as users,\
+                    admin_module as admins
+from tools import validate_input as validators,\
+                  password_tools as passwords
 
 @application.route("/login", methods=["GET"])
 def login():
@@ -29,13 +28,13 @@ def login():
 def handle_login():
     __fields = [request.form['uname'], request.form['password']]
     __field_validations = [
-        1 if validate_reg_or_log(__fields[0], "USERNAME") else 0,
-        1 if validate_reg_or_log(__fields[1], "PASSWORD") else 0
+        1 if validators.validate_reg_or_log(__fields[0], "USERNAME") else 0,
+        1 if validators.validate_reg_or_log(__fields[1], "PASSWORD") else 0
     ]
     if sum(__field_validations) == 2 and\
-        (1 if input_validation(f) else 0 for f in __fields) == 0:
+        (1 if validators.input_validation(f) else 0 for f in __fields) == 0:
         _user_data = users.user_data(__fields[0])
-        validation_result = validate_password_on_login(
+        validation_result = passwords.validate_password_on_login(
             __fields[1], _user_data[2])
         _admin_data = admins.check_admin(_user_data[0])
         if validation_result:

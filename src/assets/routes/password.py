@@ -1,7 +1,7 @@
 
 from flask import abort, redirect, render_template, request, session, flash
 
-from app import application
+from src.app import application
 from modules.database_module import DB
 from tools.validate_input import input_validation, validate_reg_or_log
 from tools.password_tools import validate_passwords_on_change

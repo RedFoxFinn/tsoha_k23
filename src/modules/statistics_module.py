@@ -1,5 +1,5 @@
 
-from modules.database_module import DB as db
+from src.modules.database_module import DB as db
 
 
 def _get_admin_count():

@@ -2,7 +2,7 @@
 from flask import redirect, render_template
 
 from modules import config_module as config, database_module as database
-from app import application
+from src.app import application
 
 
 @application.route("/init_site")

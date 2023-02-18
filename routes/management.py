@@ -1,12 +1,12 @@
 
 from flask import abort, redirect, render_template, request, session, flash
 
-from src.app import application
-from src.modules.database_module import DB
-from src.modules import chat_module as chats
-from src.modules import group_module as groups
-from src.modules import topics_module as topics
-from src.tools.validate_input import input_validation
+from app import application
+from tools.database_module import DB
+from tools import chat_module as chats,\
+                  group_module as groups,\
+                  topics_module as topics
+from tools.validate_input import input_validation
 
 _admin_levels = ["ADMIN", "SUPER"]
 

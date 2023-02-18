@@ -2,10 +2,10 @@
 import secrets
 from flask import redirect, render_template, request, session, flash
 
-from src.app import application
-from modules import user_module as users,\
-                    admin_module as admins
-from tools import validate_input as validators,\
+from app import application
+from tools import user_module as users,\
+                  admin_module as admins,\
+                  validate_input as validators,\
                   password_tools as passwords
 
 @application.route("/login", methods=["GET"])

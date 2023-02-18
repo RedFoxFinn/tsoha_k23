@@ -1,7 +1,7 @@
 
 from flask import Flask
 
-from src.modules import config_module as config
+from tools import config_module as config
 
 application = Flask(__name__,
                     template_folder="templates",

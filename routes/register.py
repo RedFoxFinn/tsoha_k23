@@ -1,10 +1,10 @@
 
 from flask import redirect, render_template, request, session, flash
 
-from src.app import application
-from src.modules import config_module as config, admin_module as admins, user_module as users
-from src.tools.validate_input import input_validation, validate_reg_or_log
-from src.tools.password_tools import validate_password_on_register
+from app import application
+from tools import config_module as config, admin_module as admins, user_module as users
+from tools.validate_input import input_validation, validate_reg_or_log
+from tools.password_tools import validate_password_on_register
 
 @application.route("/register")
 def register():

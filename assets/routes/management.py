@@ -1,7 +1,7 @@
 
 from flask import abort, redirect, render_template, request, session, flash
 
-from src.app import application
+from app import application
 from modules import database_module as database,\
                     chat_module as chats,\
                     group_module as groups,\

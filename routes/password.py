@@ -1,13 +1,10 @@
 
 from flask import abort, redirect, render_template, request, session, flash
 
-from src.app import application
-from src.modules.database_module import DB
-from src.tools import validate_input,\
-                      password_tools
-
-input_validation, validate_reg_or_log = validate_input
-validate_passwords_on_change = password_tools
+from app import application
+from tools.database_module import DB
+from tools.validate_input import input_validation, validate_reg_or_log
+from tools.password_tools import validate_passwords_on_change
 
 @application.route("/password")
 def password():

@@ -1,5 +1,5 @@
 
-from src.modules.database_module import DB
+from database_module import DB
 
 _chat_fetch_sql = "SELECT C.id AS id,C.cname AS name,C.link AS link,T.topic AS topic,G.gname AS group,G.restriction AS restriction FROM Chats C LEFT JOIN Topics T ON C.topic_id=T.id LEFT JOIN Groups G ON C.group_id=G.id"
 

@@ -1,8 +1,8 @@
 
 from flask import render_template, session
 
-from src.app import application
-from src.modules import statistics_module as statistics
+from app import application
+from tools import statistics_module as statistics
 
 
 @application.route("/statistics")

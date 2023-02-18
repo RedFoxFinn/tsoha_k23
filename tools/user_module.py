@@ -1,5 +1,5 @@
 
-from src.modules.database_module import DB
+from database_module import DB
 
 class User(DB.Model):
     id = DB.Column(DB.Integer,primary_key=True)

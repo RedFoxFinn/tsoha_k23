@@ -1,5 +1,5 @@
 
-from src.modules.database_module import DB
+from database_module import DB
 
 
 def get_topics():

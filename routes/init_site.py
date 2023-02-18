@@ -1,8 +1,8 @@
 
 from flask import redirect, render_template
 
-from src.modules import config_module as config, database_module as database
-from src.app import application
+from tools import config_module as config, database_module as database
+from app import application
 
 
 @application.route("/init_site")

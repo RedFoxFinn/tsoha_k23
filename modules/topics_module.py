@@ -1,13 +1,15 @@
 
 from modules.database_module import DB
 
+
 def get_topics():
     _sql = "SELECT id,topic FROM Topics"
     _result = DB.session.execute(_sql)
     _data = _result.fetchall()
     return _data
 
-def add_topic(topic:str):
+
+def add_topic(topic: str):
     _search_sql = f"SELECT id FROM Topics WHERE topic='{topic}'"
     _search_result = DB.session.execute(_search_sql)
     _search_data = _search_result.fetchone()

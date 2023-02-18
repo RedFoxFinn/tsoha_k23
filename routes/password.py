@@ -32,17 +32,21 @@ def password():
 @application.route("/handle_password_change", methods=["POST"])
 def handle_password_change():
     if request.form["csrf_token"] != session.get("csrf_token"):
+        print("oof...")
         return abort(403)
-    __fields = [request.form['uname'], request.form['password'], request.form['new_password'], request.form['new_password_repeat']]
+    print("ok...?")
+    __fields = [request.form['username'], request.form['password'], request.form['new_password'], request.form['new_password_repeat']]
     __field_validations = [
       1 if validate_reg_or_log(__fields[0], "USERNAME") else 0,
       1 if validate_reg_or_log(__fields[1], "PASSWORD") else 0,
       1 if validate_reg_or_log(__fields[2], "PASSWORD") else 0,
       1 if validate_reg_or_log(__fields[3], "PASSWORD") else 0
     ]
+    print(__fields)
     __user_data_request = f"SELECT id, uname, pw_hash FROM Users WHERE uname=:un"
     __user_data_update = f"UPDATE Users SET pw_hash=:hash WHERE uname=:un"
     if sum(__field_validations) == 4 and sum([1 if input_validation(f) else 0 for f in __fields]) == 0:
+        print("yay")
         login_data = {"un":__fields[0]}
         user_result = DB.session.execute(__user_data_request, login_data)
         user_data = user_result.fetchone()
@@ -52,21 +56,26 @@ def handle_password_change():
           __fields[2],
           __fields[3])
         if validation_result != None:
+            print("yay (2)")
             new_data = {"un": user_data[1], "hash": validation_result}
             try:
                 DB.session.execute(__user_data_update, new_data)
                 DB.session.commit()
+                print("yay (3)")
                 del session["username"]
                 del session["user_status"]
                 del session["csrf_token"]
                 flash("Salasanan vaihto onnistui", "success")
                 return redirect("/login")
             except:
+                print("nay...")
                 flash("Salasanan vaohto epäonnistui. Yritä uudelleen.","warning")
                 return redirect("/password")
         else:
+            print("nay (2)")
             flash("Tarkista kirjoittamasi kentät", "warning")
             return redirect("/password")
     else:
+        print("nay (3)")
         flash("Virheellinen syöte yhdessä tai useammassa kentistä","error")
         return redirect("/password")

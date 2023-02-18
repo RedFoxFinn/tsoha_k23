@@ -62,10 +62,10 @@ def input_validation(input:str):
     return bool(SQL_INJECTION_HAZARD_RATE > 32) or bool(XSS_HAZARD_RATE > 0)
 
 def _password_validation(input:str):
-    return True if input != None and len(input) >= 8 else False
+    return bool(input != None and len(input) >= 8)
 
 def _username_validation(input:str):
-    return True if input != None and len(input) >= 5 else False
+    return bool(input != None and len(input) >= 5)
 
 def validate_reg_or_log(input:str, validation:str):
     return _password_validation(input) if validation == "PASSWORD" else _username_validation(input)

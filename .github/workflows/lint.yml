@@ -18,6 +18,5 @@ jobs:
       run: pip3 install -r requirements.txt
     - name: Analysing the code with pylint
       run: |
-        pylint app.py
-        pylint tools/*.py
-        pylint routes/*.py
+        pylint */*.py | grep rated > ./docs/pylint_score_line.txt
+        python3 ./.github/workflows/pylint_score.py

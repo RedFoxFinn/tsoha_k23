@@ -2,9 +2,9 @@
 import os
 import json
 
-score_line_file_path = 'docs/pylint_score_line.txt'
+score_line_file_path = './docs/pylint_score_line.txt'
 
-score_data_file_path = 'docs/pylint_scores.json'
+score_data_file_path = './docs/pylint_scores.json'
 
 if os.path.exists(score_line_file_path):
     score_line_file = open(score_line_file_path,'r')

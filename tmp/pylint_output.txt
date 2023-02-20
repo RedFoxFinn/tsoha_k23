@@ -1,0 +1,92 @@
+************* Module routes.frontpage
+routes/frontpage.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+routes/frontpage.py:4:0: E0401: Unable to import 'app' (import-error)
+routes/frontpage.py:11:0: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module routes.init_site
+routes/init_site.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+routes/init_site.py:5:0: E0401: Unable to import 'app' (import-error)
+routes/init_site.py:9:0: C0116: Missing function or method docstring (missing-function-docstring)
+routes/init_site.py:5:0: C0411: third party import "from app import application" should be placed before "from tools import config_module as config, database_module as database" (wrong-import-order)
+************* Module routes.login
+routes/login.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+routes/login.py:5:0: E0401: Unable to import 'app' (import-error)
+routes/login.py:13:0: C0116: Missing function or method docstring (missing-function-docstring)
+routes/login.py:29:0: C0116: Missing function or method docstring (missing-function-docstring)
+routes/login.py:61:0: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module routes.management
+routes/management.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+routes/management.py:4:0: E0401: Unable to import 'app' (import-error)
+routes/management.py:15:0: C0116: Missing function or method docstring (missing-function-docstring)
+routes/management.py:34:0: C0116: Missing function or method docstring (missing-function-docstring)
+routes/management.py:91:0: C0116: Missing function or method docstring (missing-function-docstring)
+routes/management.py:96:0: C0116: Missing function or method docstring (missing-function-docstring)
+routes/management.py:123:0: C0116: Missing function or method docstring (missing-function-docstring)
+routes/management.py:146:0: C0116: Missing function or method docstring (missing-function-docstring)
+routes/management.py:177:0: C0116: Missing function or method docstring (missing-function-docstring)
+routes/management.py:179:4: W0612: Unused variable '_user' (unused-variable)
+routes/management.py:209:0: C0116: Missing function or method docstring (missing-function-docstring)
+routes/management.py:232:0: C0116: Missing function or method docstring (missing-function-docstring)
+routes/management.py:256:0: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module routes.password
+routes/password.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+routes/password.py:4:0: E0401: Unable to import 'app' (import-error)
+routes/password.py:11:0: C0116: Missing function or method docstring (missing-function-docstring)
+routes/password.py:33:0: C0116: Missing function or method docstring (missing-function-docstring)
+routes/password.py:33:0: R0915: Too many statements (25/20) (too-many-statements)
+************* Module routes.register
+routes/register.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+routes/register.py:4:0: E0401: Unable to import 'app' (import-error)
+routes/register.py:11:0: C0116: Missing function or method docstring (missing-function-docstring)
+routes/register.py:27:0: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module routes.statistics
+routes/statistics.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+routes/statistics.py:4:0: E0401: Unable to import 'app' (import-error)
+routes/statistics.py:9:0: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module tools.admin_module
+tools/admin_module.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+tools/admin_module.py:5:0: C0116: Missing function or method docstring (missing-function-docstring)
+tools/admin_module.py:15:0: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module tools.chat_module
+tools/chat_module.py:23:0: C0116: Missing function or method docstring (missing-function-docstring)
+tools/chat_module.py:30:0: C0116: Missing function or method docstring (missing-function-docstring)
+tools/chat_module.py:37:0: C0116: Missing function or method docstring (missing-function-docstring)
+tools/chat_module.py:44:0: C0116: Missing function or method docstring (missing-function-docstring)
+tools/chat_module.py:51:0: C0116: Missing function or method docstring (missing-function-docstring)
+tools/chat_module.py:58:0: C0116: Missing function or method docstring (missing-function-docstring)
+tools/chat_module.py:69:0: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module tools.database_module
+tools/database_module.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+tools/database_module.py:5:0: E0401: Unable to import 'app' (import-error)
+tools/database_module.py:5:0: C0411: third party import "from app import application" should be placed before "from tools.config_module import DB_URL" (wrong-import-order)
+************* Module tools.password_tools
+tools/password_tools.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+tools/password_tools.py:4:0: C0116: Missing function or method docstring (missing-function-docstring)
+tools/password_tools.py:9:0: C0116: Missing function or method docstring (missing-function-docstring)
+tools/password_tools.py:15:0: C0116: Missing function or method docstring (missing-function-docstring)
+tools/password_tools.py:22:0: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module tools.statistics_module
+tools/statistics_module.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+tools/statistics_module.py:5:0: C0116: Missing function or method docstring (missing-function-docstring)
+tools/statistics_module.py:12:0: C0116: Missing function or method docstring (missing-function-docstring)
+tools/statistics_module.py:19:0: C0116: Missing function or method docstring (missing-function-docstring)
+tools/statistics_module.py:26:0: C0116: Missing function or method docstring (missing-function-docstring)
+tools/statistics_module.py:33:0: C0116: Missing function or method docstring (missing-function-docstring)
+tools/statistics_module.py:40:0: C0116: Missing function or method docstring (missing-function-docstring)
+tools/statistics_module.py:47:0: C0116: Missing function or method docstring (missing-function-docstring)
+tools/statistics_module.py:54:0: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module tools.topics_module
+tools/topics_module.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+tools/topics_module.py:5:0: C0116: Missing function or method docstring (missing-function-docstring)
+tools/topics_module.py:12:0: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module tools.validate_input
+tools/validate_input.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+tools/validate_input.py:37:0: C0116: Missing function or method docstring (missing-function-docstring)
+tools/validate_input.py:50:0: C0116: Missing function or method docstring (missing-function-docstring)
+tools/validate_input.py:57:0: C0116: Missing function or method docstring (missing-function-docstring)
+tools/validate_input.py:63:0: C0116: Missing function or method docstring (missing-function-docstring)
+tools/validate_input.py:67:0: C0116: Missing function or method docstring (missing-function-docstring)
+tools/validate_input.py:71:0: C0116: Missing function or method docstring (missing-function-docstring)
+
+------------------------------------------------------------------
+Your code has been rated at 7.96/10 (previous run: 7.96/10, +0.00)
+

@@ -85,11 +85,10 @@ evaluation = 10.0 - \
 # used to format the message information. See doc for all details.
 # msg-template=
 
-output=./docs/pylint_output.txt
 # Set the output format. Available formats are text, parseable, colorized, json
 # and msvs (visual studio). You can also give a reporter class, e.g.
 # mypackage.mymodule.MyReporterClass.
-output-format =text
+output-format =text,text:tmp/pylint_output.txt
 
 # Tells whether to display a full report or only the messages.
 reports = no

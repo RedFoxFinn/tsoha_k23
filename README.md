@@ -1,6 +1,8 @@
 # ChatList
 
 [![Pylint](https://github.com/RedFoxFinn/ChatList/actions/workflows/lint.yml/badge.svg)](https://github.com/RedFoxFinn/ChatList/actions/workflows/lint.yml)
+![](https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/RedFoxFinn/ChatList/main/docs/pylint_scores.json&label=Rating&query=score&color=informational)
+![](https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/RedFoxFinn/ChatList/main/docs/pylint_scores.json&label=Difference&query=diff&color=informational)
 
 Verkkosovellus keskusteluryhmien listaamiseen ja niiden liittymislinkkien säilytykseen
 

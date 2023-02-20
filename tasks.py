@@ -10,11 +10,9 @@ def start(ctx):
 @task
 def format(ctx):
     ctx.run(
-        "autopep8 $(git ls-files '**.py*') --in-place --exclude='./venv/*','app.py'", pty=True)
+        "autopep8 $(git ls-files '**.py*') --in-place --exclude='./venv/*','app.py','tasks.py','.pylintrc'", pty=True)
 
 
 @task
 def lint(ctx):
-    ctx.run("pylint app.py", pty=True)
-    ctx.run("pylint tools", pty=True)
-    ctx.run("pylint routes", pty=True)
+    ctx.run("pylint -j 3 app.py tools routes", pty=True)

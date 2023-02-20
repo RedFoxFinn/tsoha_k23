@@ -1,6 +1,6 @@
-# Create a graph of internal dependencies in the given file (report RP0402 must
-import-graph= #
+
 [MASTER]
+# Create a graph of internal dependencies in the given file (report RP0402 must
 
 # A comma-separated list of package or module names from where C extensions may
 # be loaded. Extensions are loading into the active Python interpreter and may
@@ -62,17 +62,7 @@ confidence =
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use "--disable=all --enable=classes
 # --disable=W".
-disable = raw-checker-failed,
-bad-inline-option,
-locally-disabled,
-file-ignored,
-suppressed-message,
-useless-suppression,
-deprecated-pragma,
-use-symbolic-message-instead,
-missing-module-docstring,
-missing-function-docstring,
-missing-class -docstring
+disable = raw-checker-failed,bad-inline-option,locally-disabled,file-ignored,suppressed-message,useless-suppression,deprecated-pragma,use-symbolic-message-instead,no-member
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
@@ -110,7 +100,7 @@ score = yes
 [REFACTORING]
 
 # Maximum number of nested blocks for function / method body
-max-nested-blocks = 3
+max-nested-blocks = 4
 
 # Complete name of functions that never returns. When checking for
 # inconsistent-return-statements if a never returning function is called then
@@ -153,9 +143,7 @@ spelling-store-unknown-words = no
 [MISCELLANEOUS]
 
 # List of note tags to take in consideration, separated by a comma.
-notes = FIXME,
-XXX,
-TODO
+notes = FIXME, XXX, TODO
 
 # Regular expression of note tags to take in consideration.
 # notes-rgx=
@@ -198,7 +186,7 @@ ignored-classes = optparse.Values, thread._local, _thread._local
 # (useful for modules/projects where namespaces are manipulated during runtime
 # and thus existing member attributes cannot be deduced by static analysis). It
 # supports qualified module names, as well as Unix pattern matching.
-ignored-modules =
+ignored-modules = flask_sqlalchemy
 
 # Show a hint with possible names when a member name was not found. The aspect
 # of finding the hint is based on edit distance.
@@ -223,12 +211,11 @@ signature-mutators =
 additional-builtins =
 
 # Tells whether unused global variables should be treated as a violation.
-allow-global -unused-variables = yes
+allow-global-unused-variables = yes
 
 # List of strings which can identify a callback function by name. A callback
 # name must start or end with one of those strings.
-callbacks = cb_,
-_cb
+callbacks = cb_, _cb
 
 # A regular expression matching the name of dummy variables (i.e. expected to
 # not be used).
@@ -269,11 +256,11 @@ max-module-lines = 1000
 
 # Allow the body of a class to be on the same line as the declaration if body
 # contains single statement.
-single-line-class -stmt = no
+single-line-class-stmt = no
 
 # Allow the body of an if to be on the same line as the test if there is no
 # else.
-single-line-if -stmt = no
+single-line-if-stmt = no
 
 
 [SIMILARITIES]
@@ -308,17 +295,12 @@ attr-naming-style = snake_case
 # attr-rgx=
 
 # Bad variable names which should always be refused, separated by a comma.
-bad-names = foo,
-bar,
-baz,
-toto,
-tutu,
-tata
+bad-names = foo, bar, baz, toto, tutu, tata
 
 # Bad variable names regexes, separated by a comma. If names match any regex,
 # they will always be refused
 bad-names-rgxs =  # Naming style matching correct class attribute names.
-class -attribute-naming-style = any
+class-attribute-naming-style = any
 
 # Regular expression matching correct class attribute names. Overrides class-
 # attribute-naming-style.
@@ -327,7 +309,7 @@ class -attribute-naming-style = any
 # Naming style matching correct class names.
 
 
-class -naming-style = PascalCase
+class-naming-style = PascalCase
 
 # Regular expression matching correct class names. Overrides class-naming-
 # style.
@@ -353,13 +335,7 @@ function-naming-style = snake_case
 # function-rgx=
 
 # Good variable names which should always be accepted, separated by a comma.
-good-names = i,
-j,
-k,
-ex,
-Run,
-_,
-id
+good-names = i, j, k, ex, Run, _, id
 
 # Good variable names regexes, separated by a comma. If names match any regex,
 # they will always be accepted
@@ -423,8 +399,8 @@ check-str-concat-over-line-jumps = no
 # List of modules that can be imported at any level, not just the top level
 # one.
 # Allow wildcard imports from modules that define __all__.
-allow-any-import -level =
-allow-wildcard-with -all = no
+allow-any-import-level =
+allow-wildcard-with-all = no
 
 # Analyse import fallback blocks. This can be used to support both Python 2 and
 # 3 compatible code, which means that the block might have code that exists
@@ -437,10 +413,13 @@ deprecated-modules = optparse, tkinter.tix
 # Create a graph of external dependencies in the given file (report RP0402 must
 # not be disabled).
 # Create a graph of every (i.e. internal and external) dependencies in the
-ext-import -graph =
+ext-import-graph =
+# Create a graph of every (i.e. internal and external) dependencies in the
+# given file (report RP0402 must not be disabled).
+import-graph=
 # given file (report RP0402 must not be disabled).
 # not be disabled).
-int-import -graph =  # Force import order to recognize a module as part of the standard
+int-import-graph =  # Force import order to recognize a module as part of the standard
 # compatibility libraries.
 # Force import order to recognize a module as part of a third party library.
 known-standard-library =
@@ -450,18 +429,11 @@ known-third-party = enchant
 preferred-modules = [CLASSES]
 
 # List of method names used to declare (i.e. assign) instance attributes.
-defining-attr-methods = __init__,
-__new__,
-setUp,
-__post_init__
+defining-attr-methods = __init__, __new__, setUp, __post_init__
 
 # List of member names, which should be excluded from the protected access
 # warning.
-exclude-protected = _asdict,
-_fields,
-_replace,
-_source,
-_make
+exclude-protected = _asdict, _fields, _replace, _source, _make
 
 # List of valid names for the first argument in a class method.
 valid-classmethod-first-arg = cls
@@ -507,5 +479,4 @@ min-public-methods = 0
 
 # Exceptions that will emit a warning when being caught. Defaults to
 # "BaseException, Exception".
-overgeneral-exceptions = builtins.BaseException,
-builtins.Exception
+overgeneral-exceptions = builtins.BaseException, builtins.Exception

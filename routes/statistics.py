@@ -23,11 +23,11 @@ def stats():
     _status = session.get("user_status")
     _stats = None
     if _user is not None and _status in ["ADMIN", "SUPER"]:
-        _stats = statistics.get_statistics(type="FULL")
+        _stats = statistics.get_statistics(statistics_coverage="FULL")
     elif _user is not None:
-        _stats = statistics.get_statistics(type="BROAD")
+        _stats = statistics.get_statistics(statistics_coverage="BROAD")
     else:
-        _stats = statistics.get_statistics(type="BASIC")
+        _stats = statistics.get_statistics(statistics_coverage="BASIC")
     _localized_stats = [(localized_fields[key], value)
                         for (key, value) in _stats]
     return render_template("statistics.html", local=localized, stats=_localized_stats)

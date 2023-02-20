@@ -56,7 +56,7 @@ def chat_management():
     _group_data = groups.get_groups()
 
     _moderator_sql = "SELECT id,handle FROM Moderators"
-    _moderator_result = DB.session.execute(_moderator_sql)
+    _moderator_result = DB.session.execute(_moderator_sql)  # pylint: disable=no-member
     _moderator_data = _moderator_result.fetchall()
 
     _user = session.get("username")
@@ -131,8 +131,8 @@ def handle_moderator_adding():
         input_data = {"handle": _fields[0], "chat_link": _fields[1]}
         sql = "INSERT INTO Moderators (handle,chat_link) VALUES (:handle,:chat_link)"
         try:
-            DB.session.execute(sql, input_data)
-            DB.session.commit()
+            DB.session.execute(sql, input_data) # pylint: disable=no-member
+            DB.session.commit() # pylint: disable=no-member
             flash("Ylläpitäjän lisääminen onnistui", "success")
             return redirect("/management/chats")
         except:   # pylint: disable=bare-except
@@ -162,7 +162,7 @@ def group_management():
     _user = session.get("username")
     if _user is not None:
         sql = "SELECT id,gname,restriction FROM Groups"
-        result = DB.session.execute(sql)
+        result = DB.session.execute(sql)    # pylint: disable=no-member
         data = result.fetchall()
         return render_template(
             "group_management.html",
@@ -217,8 +217,8 @@ def handle_group_adding():
         input_data = {"gname": _fields[0], "restrict": _fields[1]}
         sql = "INSERT INTO Groups (gname,restriction) VALUES (:gname,:restrict)"
         try:
-            DB.session.execute(sql, input_data)
-            DB.session.commit()
+            DB.session.execute(sql, input_data) # pylint: disable=no-member
+            DB.session.commit() # pylint: disable=no-member
             flash("Ryhmän lisääminen onnistui", "success")
             return redirect("/management/groups")
         except:   # pylint: disable=bare-except
@@ -241,8 +241,8 @@ def handle_group_update():
         sql = f"UPDATE Groups SET gname='{_fields[0]}',\
           restriction='{_fields[1]}' WHERE id={_fields[2]}"
         try:
-            DB.session.execute(sql)
-            DB.session.commit()
+            DB.session.execute(sql) # pylint: disable=no-member
+            DB.session.commit() # pylint: disable=no-member
             flash("Ryhmän päivittämimnen onnistui", "success")
             return redirect("/management/groups")
         except:   # pylint: disable=bare-except

@@ -2,7 +2,7 @@
 
 [![Pylint](https://github.com/RedFoxFinn/ChatList/actions/workflows/lint.yml/badge.svg)](https://github.com/RedFoxFinn/ChatList/actions/workflows/lint.yml)
 
-[![GitHub latest commit](https://badgen.net/github/last-commit/Naereen/Strapdown.js)](https://gitHub.com/RedFoxFinn/ChatList/commit/)
+[![GitHub latest commit](https://badgen.net/github/last-commit/RedFoxFinn/ChatList)](https://gitHub.com/RedFoxFinn/ChatList/commit/)
 
 Verkkosovellus keskusteluryhmien listaamiseen ja niiden liittymislinkkien säilytykseen
 

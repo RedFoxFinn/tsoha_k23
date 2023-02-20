@@ -176,7 +176,6 @@ def group_management():
 @application.route("/management/groups/<int:id_value>")
 def manage_single_group(id_value: int):
     _group = groups.get_group_by_id(id_value)
-    _user = session.get("username")
     _status = session.get("user_status")
     if _status is None or _status not in ["ADMIN", "SUPER"]:
         flash("Toiminto vaatii ylläpitäjän oikeudet")

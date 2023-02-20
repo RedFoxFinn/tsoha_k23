@@ -1,5 +1,7 @@
 # ChatList
 
+[![Pylint](https://github.com/RedFoxFinn/ChatList/actions/workflows/lint.yml/badge.svg)](https://github.com/RedFoxFinn/ChatList/actions/workflows/lint.yml)
+
 Verkkosovellus keskusteluryhmien listaamiseen ja niiden liittymislinkkien säilytykseen
 
 Sovellus on toteutettu Helsingin Yliopiston kurssilla [Aineopintojen harjoitustyö: Tietokantasovellus (tsoha)](https://studies.helsinki.fi/opintotarjonta/cur/hy-opt-cur-2223-2e32cd2f-c204-4e8d-8233-b652d7194713)

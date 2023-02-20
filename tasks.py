@@ -9,11 +9,11 @@ def start(ctx):
 
 @task
 def format(ctx):
-    ctx.run(
-        "autopep8 $(git ls-files '**.py*') --in-place --exclude='./venv/*','app.py','tasks.py','.pylintrc'", pty=True)
+    ctx.run("autopep8 $(git ls-files '**.py*') --in-place --exclude='./venv/*','app.py','tasks.py','.pylintrc'", pty=True)
 
 
 @task
 def lint(ctx):
     ctx.run("pylint */*.py | grep rated > tmp/pylint_score_line.txt", pty=True)
     ctx.run("python3 pylint_score.py", pty=True)
+    ctx.run("git add docs/pylint_scores.json")

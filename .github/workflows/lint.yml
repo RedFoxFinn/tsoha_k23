@@ -17,6 +17,5 @@ jobs:
     - name: Install dependencies
       run: pip3 install -r requirements.txt
     - name: Analysing the code with pylint
-      run: |
-        pylint */*.py | grep rated > ./tmp/pylint_score_line.txt
-        python3 pylint_score.py
+      run: pylint */*.py
+        

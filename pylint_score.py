@@ -2,7 +2,7 @@
 import os
 import json
 
-score_line_file_path = 'docs/pylint_score_line.txt'
+score_line_file_path = 'tmp/pylint_score_line.txt'
 
 score_data_file_path = 'docs/pylint_scores.json'
 

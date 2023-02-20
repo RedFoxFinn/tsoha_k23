@@ -15,5 +15,5 @@ def format(ctx):
 
 @task
 def lint(ctx):
-    ctx.run("pylint */*.py | grep rated > docs/pylint_score_line.txt", pty=True)
+    ctx.run("pylint */*.py | grep rated > tmp/pylint_score_line.txt", pty=True)
     ctx.run("python3 pylint_score.py", pty=True)

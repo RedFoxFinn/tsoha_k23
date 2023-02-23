@@ -59,7 +59,9 @@ def handle_registration():
                 return redirect("/login")
             flash("Käyttäjätunnus on jo käytössä", "info")
             return redirect("/register")
-        flash("Virheellinen syöte yhdessä tai useammassa kentistä. Tarkista antamasi arvot.", "warning")
+        flash("Virheellinen syöte yhdessä tai useammassa kentistä. \
+            Tarkista antamasi arvot.", "warning")
         return redirect("/register")
-    flash("Virheellinen syöte yhdessä tai useammassa kentistä. Tarkista antamasi arvot.", "error")
+    flash("Virheellinen syöte yhdessä tai useammassa kentistä. \
+        Tarkista antamasi arvot.", "error")
     return redirect("/register")

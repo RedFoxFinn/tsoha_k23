@@ -61,11 +61,19 @@ def input_validation(input_value: str):
 
 
 def _password_validation(input_value: str):
-    return bool(input_value is not None and len(input_value) >= 8)
+    pattern = re.compile("[a-zA-Z0-9]{8,32}")
+    return bool(
+        input_value is not None\
+            and 8 <= len(input_value) <= 32\
+            and pattern.search(input_value))
 
 
 def _username_validation(input_value: str):
-    return bool(input_value is not None and len(input_value) >= 5)
+    pattern = re.compile("[a-zA-Z0-9]{5,32}")
+    return bool(
+        input_value is not None\
+            and 5 <= len(input_value) <= 32\
+            and pattern.search(input_value))
 
 
 def validate_reg_or_log(input_value: str, validation: str):

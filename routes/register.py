@@ -12,15 +12,24 @@ def register():
     _user = session.get("username")
     if _user is not None:
         return redirect("/")
-    localized = ["Rekisteröityminen palveluun", "Käyttäjänimi", "Salasana",
-                 "Toista salasana", "Rekisteröitymistunnus", "Rekisteröidy"]
-    return render_template("registration.html",
-                           text=localized[0],
-                           username=localized[1],
-                           password=localized[2],
-                           repeat_password=localized[3],
-                           registration_code=localized[4],
-                           submit=localized[5])
+    localized = {
+        "text":"Rekisteröityminen palveluun",
+        "username":"Käyttäjänimi",
+        "password":"Salasana",
+        "repeat_password":"Toista salasana",
+        "registration_code":"Rekisteröitymistunnus",
+        "submit":"Rekisteröidy",
+        "tip_header":"Ohjeet rekisteröitymiseen",
+        "tip_username":"Käyttäjätunnuksen pituus 5-32 merkkiä",
+        "tip_password":"Salasanan pituus 8-32 merkkiä",
+        "tip_characters":"Sallittuja merkkejä",
+        "tip_letters":"Kirjaimet a-z sekä A-Z",
+        "tip_numbers":"Numerot 0-9",
+        "tip_forbidden":"Erikoismerkit eivät ole salittuja",
+        "tip_uname":"5-32 merkkiä",
+        "tip_pw":"8-32 merkkiä"
+    }
+    return render_template("registration.html",locals=localized)
 
 
 @application.route("/handle_registration", methods=["POST"])
@@ -50,7 +59,7 @@ def handle_registration():
                 return redirect("/login")
             flash("Käyttäjätunnus on jo käytössä", "info")
             return redirect("/register")
-        flash("Virheellinen syöte yhdessä tai useammassa kentistä", "warning")
+        flash("Virheellinen syöte yhdessä tai useammassa kentistä. Tarkista antamasi arvot.", "warning")
         return redirect("/register")
-    flash("Virheellinen syöte yhdessä tai useammassa kentistä", "error")
+    flash("Virheellinen syöte yhdessä tai useammassa kentistä. Tarkista antamasi arvot.", "error")
     return redirect("/register")

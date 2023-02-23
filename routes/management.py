@@ -161,9 +161,7 @@ def group_management():
                          ("AGE", "Ikärajoitettu"), ("SEC", "Turvaluokitettu")]
     _user = session.get("username")
     if _user is not None:
-        sql = "SELECT id,gname,restriction FROM Groups"
-        result = DB.session.execute(sql)    # pylint: disable=no-member
-        data = result.fetchall()
+        data = groups.get_groups()
         return render_template(
             "group_management.html",
             local=localized,

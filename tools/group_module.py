@@ -19,7 +19,7 @@ def get_groups():
             'from tools import group_module as groups'
             'groups.get_groups()'
     """
-    _sql = "SELECT id,gname,restriction FROM Groups"
+    _sql = "SELECT id,gname,restriction FROM Groups ORDER BY gname ASC"
     _result = DB.session.execute(_sql)      # pylint: disable=no-member
     _data = _result.fetchall()
     return _data

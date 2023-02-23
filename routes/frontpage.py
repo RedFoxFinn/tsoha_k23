@@ -22,14 +22,14 @@ def frontpage():
     }
     _chats = []
     _chats += chats.get_public_chats()
-    if session.get("username") is not None:
-        _chats += chats.get_login_restricted_chats()
-        _chats += chats.get_age_restricted_chats()
     if session.get("username") is not None and\
             session.get("user_status") in ["ADMIN", "SUPER"]:
         _chats += chats.get_login_restricted_chats()
         _chats += chats.get_age_restricted_chats()
         _chats += chats.get_security_restricted_chats()
+    elif session.get("username") is not None:
+        _chats += chats.get_login_restricted_chats()
+        _chats += chats.get_age_restricted_chats()
     return render_template(
         "index.html",
         text=localized,

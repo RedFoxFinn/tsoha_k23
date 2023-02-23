@@ -5,6 +5,7 @@ from app import application
 from tools.database_module import DB
 from tools import chat_module as chats,\
     group_module as groups,\
+    moderator_module as moderators,\
     topics_module as topics
 from tools.validate_input import input_validation
 
@@ -54,10 +55,7 @@ def chat_management():
     }
     _topic_data = topics.get_topics()
     _group_data = groups.get_groups()
-
-    _moderator_sql = "SELECT id,handle FROM Moderators"
-    _moderator_result = DB.session.execute(_moderator_sql)  # pylint: disable=no-member
-    _moderator_data = _moderator_result.fetchall()
+    _moderator_data = moderators.get_moderators()
 
     _user = session.get("username")
     _permission = session.get("user_status")
@@ -111,11 +109,11 @@ def handle_chat_adding():
         input_data = {"cname": _fields[0], "topic": int(_fields[1]), "group": int(
             _fields[2]), "link": _fields[3], "moderators": [int(mod) for mod in _fields[4]]}
         if chats.add_chat(input_data):
-            flash("Keskusteluryhmän lisääminen onnistui", "success")
+            flash("Keskusteluryhmän lisääminen onnistui.", "success")
             return redirect("/management/chats")
-        flash("Virheellinen syöte yhdessä tai useammassa kentistä", "warning")
+        flash("Virheellinen syöte yhdessä tai useammassa kentistä.", "warning")
         return redirect("/management/chats")
-    flash("Virheellinen syöte yhdessä tai useammassa kentistä", "error")
+    flash("Virheellinen syöte yhdessä tai useammassa kentistä.", "error")
     return redirect("/management/chats")
 
 
@@ -128,17 +126,17 @@ def handle_moderator_adding():
         1 if input_validation(f) else 0 for f in _fields
     ]
     if sum(_input_validations) == 0:
-        input_data = {"handle": _fields[0], "chat_link": _fields[1]}
-        sql = "INSERT INTO Moderators (handle,chat_link) VALUES (:handle,:chat_link)"
-        try:
-            DB.session.execute(sql, input_data) # pylint: disable=no-member
-            DB.session.commit() # pylint: disable=no-member
-            flash("Ylläpitäjän lisääminen onnistui", "success")
+        _result = moderators.add_moderator(_fields[0],_fields[1])
+        if _result == 'ADDED':
+            flash("Ylläpitäjän lisääminen onnistui.", "success")
             return redirect("/management/chats")
-        except:   # pylint: disable=bare-except
-            flash("Virheellinen syöte yhdessä tai useammassa kentistä", "warning")
+        elif _result == 'UPDATED':
+            flash("Ylläpitäjän tiedot päivitetty onnistuneesti.", "success")
             return redirect("/management/chats")
-    flash("Virheellinen syöte yhdessä tai useammassa kentistä", "error")
+        flash("Odottamaton virhe: ".join(_result), "warning")
+        return redirect("/management/chats")
+    flash("Virheellinen syöte yhdessä tai useammassa kentistä. \
+        Tarkista syöttämäsi tiedot.", "error")
     return redirect("/management/chats")
 
 

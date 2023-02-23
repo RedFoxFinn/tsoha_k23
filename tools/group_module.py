@@ -10,6 +10,7 @@
 """
 from tools.database_module import DB
 
+GROUP_FETCH_SQL = "SELECT id,gname,restriction FROM Groups"
 
 def get_groups():
     """
@@ -19,7 +20,7 @@ def get_groups():
             'from tools import group_module as groups'
             'groups.get_groups()'
     """
-    _sql = "SELECT id,gname,restriction FROM Groups ORDER BY gname ASC"
+    _sql = f"{GROUP_FETCH_SQL} ORDER BY gname ASC"
     _result = DB.session.execute(_sql)      # pylint: disable=no-member
     _data = _result.fetchall()
     return _data
@@ -34,7 +35,7 @@ def get_group_by_id(id_value: int):
             'groups.get_group_by_id(*id_value*)'
                 where id_value is the id of a group in the database
     """
-    _sql = f"SELECT id,gname,restriction FROM Groups WHERE id={id_value}"
+    _sql = f"{GROUP_FETCH_SQL} WHERE id={id_value} ORDER BY gname ASC"
     _result = DB.session.execute(_sql)      # pylint: disable=no-member
     _data = _result.fetchone()
     return _data
@@ -42,7 +43,8 @@ def get_group_by_id(id_value: int):
 
 def count():
     """
-        module function to return number of groups added to the database
+        module function to return number of entries in the database
+        related to the model 'Group'
 
         intended use:
             'from tools import group_module as groups'

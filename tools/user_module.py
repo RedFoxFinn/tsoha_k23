@@ -10,6 +10,8 @@
 """
 from tools.database_module import DB
 
+USER_FETCH_SQL_LIMITED = "SELECT id,uname FROM Users"
+USER_FETCH_SQL_FULL = "SELECT id,uname,pw_hash FROM Users"
 
 def register(new_username: str, new_password_hash: str):
     """
@@ -22,7 +24,7 @@ def register(new_username: str, new_password_hash: str):
                 where the password hash has already been generated in password_tools
     """
     _user_data_insert = "INSERT INTO Users (uname, pw_hash) VALUES (:un, :hash)"
-    _user_data_request = "SELECT id, uname FROM Users WHERE uname=:un"
+    _user_data_request = f"{USER_FETCH_SQL_LIMITED} WHERE uname=:un"
     _insert_data = {"un": new_username, "hash": new_password_hash}
     _request_data = {"un": new_username}
     try:
@@ -49,7 +51,7 @@ def count():
     return _data[0]
 
 
-def user_data(uname: str):
+def user_by_id(id_value: int, full_mode:bool=False):
     """
         module function to return user data of a registered user from database
 
@@ -58,7 +60,22 @@ def user_data(uname: str):
             'users.user_data(*uname*)'
                 where uname is the username to search from database
     """
-    _sql = f"SELECT id, uname, pw_hash FROM Users WHERE uname='{uname}'"
+    _sql = f"{USER_FETCH_SQL_FULL if full_mode else USER_FETCH_SQL_LIMITED} FROM Users WHERE id={id_value}"
+    _result = DB.session.execute(_sql)  # pylint: disable=no-member
+    _data = _result.fetchone()
+    return _data
+
+
+def user_by_uname(uname: str, full_mode:bool=False):
+    """
+        module function to return user data of a registered user from database
+
+        intended use:
+            'from tools import user_module as users'
+            'users.user_data(*uname*)'
+                where uname is the username to search from database
+    """
+    _sql = f"{USER_FETCH_SQL_FULL if full_mode else USER_FETCH_SQL_LIMITED} FROM Users WHERE uname='{uname}'"
     _result = DB.session.execute(_sql)  # pylint: disable=no-member
     _data = _result.fetchone()
     return _data

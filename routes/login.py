@@ -37,7 +37,7 @@ def handle_login():
     ]
     if sum(__field_validations) == 2 and\
             sum(__input_validations) == 0:
-        _user_data = users.user_data(__fields[0])
+        _user_data = users.user_by_uname(__fields[0],full_mode=True)
         validation_result = passwords.validate_password_on_login(
             __fields[1], _user_data[2])
         _admin_data = admins.check_admin(_user_data[0])
@@ -53,7 +53,8 @@ def handle_login():
             return redirect("/")
         flash("Tarkista tunnuksesi kirjoitusasu", "warning")
         return redirect("/login")
-    flash("Virheellinen syöte yhdessä tai useammassa kentistä", "error")
+    flash("Virheellinen syöte yhdessä tai useammassa kentistä. \
+        Tarkista tiedot.", "error")
     return redirect("/login")
 
 

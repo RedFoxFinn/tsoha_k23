@@ -67,6 +67,10 @@ def add_chat(chat_insert_data):
 
 
 def count():
+    """
+        module function to return number of entries in the database
+        related to the model 'Chat'
+    """
     _sql = "SELECT count(*) FROM Chats"
     _result = DB.session.execute(_sql)  # pylint: disable=no-member
     _data = _result.fetchall()[0]

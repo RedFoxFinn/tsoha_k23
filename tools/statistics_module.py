@@ -1,47 +1,42 @@
 
 from tools.database_module import DB as db
+from tools import\
+    admin_module as admins,\
+    chat_module as chats,\
+    group_module as groups,\
+    moderator_module as moderators,\
+    topics_module as topics,\
+    user_module as users
 
 
 def _get_admin_count():
-    sql = "SELECT count(*) FROM Admins"
-    result = db.session.execute(sql)    # pylint: disable=no-member
-    data = result.fetchall()[0]
-    return ("admins", data[0])
+    _data = admins.count()
+    return ("admins", _data)
 
 
 def _get_chat_count():
-    sql = "SELECT count(*) FROM Chats"
-    result = db.session.execute(sql)    # pylint: disable=no-member
-    data = result.fetchall()[0]
-    return ("chats", data[0])
+    _data = chats.count()
+    return ("chats", _data)
 
 
 def _get_group_count():
-    sql = "SELECT count(*) FROM Groups"
-    result = db.session.execute(sql)    # pylint: disable=no-member
-    data = result.fetchall()[0]
-    return ("groups", data[0])
+    _data = groups.count()
+    return ("groups", _data)
 
 
 def _get_moderator_count():
-    sql = "SELECT count(*) FROM Moderators"
-    result = db.session.execute(sql)    # pylint: disable=no-member
-    data = result.fetchall()[0]
-    return ("moderators", data[0])
+    _data = moderators.count()
+    return ("moderators", _data)
 
 
 def _get_topic_count():
-    sql = "SELECT count(*) FROM Topics"
-    result = db.session.execute(sql)    # pylint: disable=no-member
-    data = result.fetchall()[0]
-    return ("topics", data[0])
+    _data = topics.count()
+    return ("topics", _data)
 
 
 def _get_user_count():
-    sql = "SELECT count(*) FROM Users"
-    result = db.session.execute(sql)    # pylint: disable=no-member
-    data = result.fetchall()[0]
-    return ("users", data[0])
+    _data = users.count()
+    return ("users", _data)
 
 
 def _get_request_count():

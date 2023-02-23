@@ -1,16 +1,14 @@
 
 from flask import redirect, render_template
 
-from tools import config_module as config, database_module as database
+from tools import config_module as config, user_module as users
 from app import application
 
 
 @application.route("/init_site")
 def init_site():
-    sql = "SELECT count(*) FROM Users"
-    result = database.DB.session.execute(sql)   # pylint: disable=no-member
-    data = result.fetchall()[0]
-    if data[0] == 0:
+    data = users.count()
+    if data == 0:
         localized = [f"Tervetuloa sovellukseen {config.APP_NAME}",
                      "Aloita alustan käyttöönotto määrittämällä ylläpitäjä", "Aloita määritys"]
         return render_template(

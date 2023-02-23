@@ -17,3 +17,14 @@ def check_admin(uid: int):
     _admin_check_result = DB.session.execute(_admin_check_sql)   # pylint: disable=no-member
     _admin_data = _admin_check_result.fetchone()
     return _admin_data
+
+
+def count():
+    """
+        module function to return number of entries in the database
+        related to the model 'Admin'
+    """
+    _sql = "SELECT count(*) FROM Admins"
+    _result = DB.session.execute(_sql)  # pylint: disable=no-member
+    _data = _result.fetchall()[0]
+    return _data[0]

@@ -28,7 +28,7 @@ CREATE TABLE Chats (
 CREATE TABLE Moderators (
   id SERIAL PRIMARY KEY,
   handle TEXT NOT NULL UNIQUE,
-  chat_link TEXT NOT NULL
+  chat_links TEXT[] NOT NULL
 );
 CREATE TABLE Requests (
   id SERIAL PRIMARY KEY,

@@ -9,9 +9,7 @@ from tools import config_module as config,\
 
 @application.route("/", methods=["GET"])
 def frontpage():
-    print('yay')
     if users.count() == 0:
-        print('yay2')
         flash("Aloitetaan sovelluksen alustaminen...", "warning")
         return redirect("/init_site")
     localized = f"Tervetuloa sovellukseen {config.APP_NAME}"

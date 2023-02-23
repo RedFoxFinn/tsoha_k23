@@ -188,7 +188,8 @@ sovelluksen tietoihin kohdistuvien muutosten hyväksymispyynnöt sisältävä ti
 - info_table TEXT NOT NULL, taulu, jonka tietoa pyydetään muutettavan
 - info_id INTEGER NOT NULL, taulun rivi, jota pyydetään muutettavan
 - change_type TEXT NOT NULL, muutostyyppi (DELETE/UPDATE)
-- change_info TEXT[], muutokset
+- change_info TEXT[], muutokset,
+- datetime_of_request INTEGER, pyynnön luomisaika (unix-datetime)
 
 </p>
 </details>

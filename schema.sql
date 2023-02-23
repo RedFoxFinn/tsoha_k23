@@ -36,5 +36,6 @@ CREATE TABLE Requests (
   info_table TEXT NOT NULL,
   info_id INTEGER NOT NULL,
   change_type TEXT NOT NULL,
-  change_info TEXT[]
+  change_info TEXT[],
+  datetime_of_request INTEGER
 );

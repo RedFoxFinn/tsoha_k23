@@ -2,6 +2,7 @@
 import os
 import json
 
+_pylint_output_file_path = 'tmp/pylint_output.txt'
 score_line_file_path = 'tmp/pylint_score_line.txt'
 
 score_data_file_path = 'docs/pylint_scores.json'
@@ -27,3 +28,4 @@ if os.path.exists(score_line_file_path):
     score_line_file.close()
 
     os.remove(score_line_file_path)
+    os.remove(_pylint_output_file_path)

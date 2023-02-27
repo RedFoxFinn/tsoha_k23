@@ -60,7 +60,7 @@ def user_by_id(id_value: int, full_mode:bool=False):
             'users.user_data(*uname*)'
                 where uname is the username to search from database
     """
-    _sql = f"{USER_FETCH_SQL_FULL if full_mode else USER_FETCH_SQL_LIMITED} FROM Users WHERE id={id_value}"
+    _sql = f"{USER_FETCH_SQL_FULL if full_mode else USER_FETCH_SQL_LIMITED} WHERE id={id_value}"
     _result = DB.session.execute(_sql)  # pylint: disable=no-member
     _data = _result.fetchone()
     return _data
@@ -75,7 +75,7 @@ def user_by_uname(uname: str, full_mode:bool=False):
             'users.user_data(*uname*)'
                 where uname is the username to search from database
     """
-    _sql = f"{USER_FETCH_SQL_FULL if full_mode else USER_FETCH_SQL_LIMITED} FROM Users WHERE uname='{uname}'"
+    _sql = f"{USER_FETCH_SQL_FULL if full_mode else USER_FETCH_SQL_LIMITED} WHERE uname='{uname}'"
     _result = DB.session.execute(_sql)  # pylint: disable=no-member
     _data = _result.fetchone()
     return _data

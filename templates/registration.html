@@ -10,15 +10,29 @@
     <li>{{ locals.tip_numbers }}</li>
     <li>{{ locals.tip_forbidden }}</li>
   </ul>
-  <form action="/handle_registration" method="POST" class="vertical">
-    <label for="new_username">{{ locals.username }}</label>
-    <input type="text" name="new_username" id="new_username" required placeholder="{{locals.tip_uname}}"><br/>
-    <label for="new_password">{{ locals.password }}</label>
-    <input type="password" name="new_password" id="new_password" required placeholder="{{locals.tip_pw}}"><br/>
-    <label for="new_password_repeat">{{ locals.repeat_password }}</label>
-    <input type="password" name="new_password_repeat" id="new_password_repeat" required placeholder="{{locals.tip_pw}}"><br/>
-    <label for="registration_code">{{ locals.registration_code }}</label>
-    <input type="password" name="registration_code" id="registration_code" required><br/>
-    <input type="submit" value={{locals.submit}}>
-  </form>
+  {% if session.retry_form_values %}
+    <form action="/handle_registration" method="POST" class="vertical">
+        <label for="new_username">{{ locals.username }}</label>
+        <input type="text" name="new_username" id="new_username" required placeholder="{{locals.tip_uname}}" value="{{session.retry_form_values.username}}"><br/>
+        <label for="new_password">{{ locals.password }}</label>
+        <input type="password" name="new_password" id="new_password" required placeholder="{{locals.tip_pw}}" value="{{session.retry_form_values.password}}"><br/>
+        <label for="new_password_repeat">{{ locals.repeat_password }}</label>
+        <input type="password" name="new_password_repeat" id="new_password_repeat" required placeholder="{{locals.tip_pw}}" value="{{session.retry_form_values.pw_retype}}"><br/>
+        <label for="registration_code">{{ locals.registration_code }}</label>
+        <input type="password" name="registration_code" id="registration_code" required value="{{session.retry_form_values.reg_code}}"><br/>
+        <input type="submit" value={{locals.submit}}>
+    </form>
+  {% else %}
+    <form action="/handle_registration" method="POST" class="vertical">
+        <label for="new_username">{{ locals.username }}</label>
+        <input type="text" name="new_username" id="new_username" required placeholder="{{locals.tip_uname}}"><br/>
+        <label for="new_password">{{ locals.password }}</label>
+        <input type="password" name="new_password" id="new_password" required placeholder="{{locals.tip_pw}}"><br/>
+        <label for="new_password_repeat">{{ locals.repeat_password }}</label>
+        <input type="password" name="new_password_repeat" id="new_password_repeat" required placeholder="{{locals.tip_pw}}"><br/>
+        <label for="registration_code">{{ locals.registration_code }}</label>
+        <input type="password" name="registration_code" id="registration_code" required><br/>
+        <input type="submit" value={{locals.submit}}>
+    </form>
+  {% endif %}
 {% endblock %}

@@ -53,15 +53,36 @@ def handle_registration():
         if __fields[3] == config.REG_CODE and validation is not None:
             _result = users.register(__fields[0], validation)
             if _result is not None:
+                _retry_values = session.get("retry_form_values")
+                if _retry_values is not None:
+                    del session["retry_form_values"]
                 flash("Rekisteröityminen onnistui!", "success")
                 if (_result[0] == 1 or users.count() == 1) and admins.register_admin(_result[0]):
                     flash("Tunnus rekisteröity pääkäyttäjäksi", "success")
                 return redirect("/login")
+            session["retry_form_values"] = {
+                "username": __fields[0],
+                "password": __fields[1],
+                "pw_retype": __fields[2],
+                "reg_code": __fields[3]
+            }
             flash("Käyttäjätunnus on jo käytössä", "info")
             return redirect("/register")
+        session["retry_form_values"] = {
+            "username": __fields[0],
+            "password": __fields[1],
+            "pw_retype": __fields[2],
+            "reg_code": __fields[3]
+        }
         flash("Virheellinen syöte yhdessä tai useammassa kentistä. \
-            Tarkista antamasi arvot.", "warning")
+            Tarkista antamasi rekisteröitymistunnus tai salasanakentät.", "warning")
         return redirect("/register")
+    session["retry_form_values"] = {
+        "username": __fields[0],
+        "password": __fields[1],
+        "pw_retype": __fields[2],
+        "reg_code": __fields[3]
+    }
     flash("Virheellinen syöte yhdessä tai useammassa kentistä. \
         Tarkista antamasi arvot.", "error")
     return redirect("/register")

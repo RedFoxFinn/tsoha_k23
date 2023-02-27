@@ -24,6 +24,15 @@ def add_topic(topic: str):
     return _research_data[0]
 
 
+def get_topic(topic:str):
+    _search_sql = f"{TOPIC_FETCH_SQL} WHERE id={int(topic)}"\
+        if topic.isnumeric()\
+        else f"{TOPIC_FETCH_SQL} WHERE topic='{topic}'"
+    _search_result = DB.session.execute(_search_sql)    # pylint: disable=no-member
+    _search_data = _search_result.fetchone()
+    return _search_data
+
+
 def count():
     """
         module function to return number of entries in the database

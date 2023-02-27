@@ -7,7 +7,7 @@ from tools import chat_module as chats,\
     group_module as groups,\
     moderator_module as moderators,\
     topics_module as topics
-from tools.validate_input import input_validation
+from tools.validate_input import input_validation, link_input_validation
 
 _admin_levels = ["ADMIN", "SUPER"]
 
@@ -51,7 +51,14 @@ def chat_management():
         "link": "Linkki",
         "moderators": "Ylläpitäjät",
         "submit": "Lisää keskusteluryhmä",
-        "update": "Päivitä"
+        "update": "Päivitä",
+        "tip_header":"Ohjeet ylläpitäjien lisäämiseen",
+        "tip_mod_handle":"Ylläpitäjän nimimerkin pituus 3-32 merkkiä",
+        "tip_mod_chat":"Linkki keskusteluun ylläpitäjän kanssa",
+        "tip_characters":"Sallittuja merkkejä",
+        "tip_letters":"Kirjaimet a-z sekä A-Z",
+        "tip_numbers":"Numerot 0-9",
+        "tip_forbidden":"Muut erikoismerkit kuin @,$,£,€,_,-,+ ja . eivät ole sallittuja ylläpitäjän nimimerkissä"
     }
     _topic_data = topics.get_topics()
     _group_data = groups.get_groups()
@@ -123,18 +130,27 @@ def handle_moderator_adding():
         return abort(403)
     _fields = [request.form["handle"], request.form["chat_link"]]
     _input_validations = [
-        1 if input_validation(f) else 0 for f in _fields
+        1 if input_validation(_fields[0],handle_mode=True) else 0,
+        1 if link_input_validation(_fields[1]) else 0
     ]
-    if sum(_input_validations) == 0:
+    if sum(_input_validations) == 2:
         _result = moderators.add_moderator(_fields[0],_fields[1])
         if _result == 'ADDED':
+            _retry_values = session.get("retry_form_values")
+            if _retry_values is not None:
+                del session["retry_form_values"]
             flash("Ylläpitäjän lisääminen onnistui.", "success")
             return redirect("/management/chats")
         elif _result == 'UPDATED':
+            _retry_values = session.get("retry_form_values")
+            if _retry_values is not None:
+                del session["retry_form_values"]
             flash("Ylläpitäjän tiedot päivitetty onnistuneesti.", "success")
             return redirect("/management/chats")
+        session["retry_form_values"] = {"handle": _fields[0],"link": _fields[1]}
         flash("Odottamaton virhe: ".join(_result), "warning")
         return redirect("/management/chats")
+    session["retry_form_values"] = {"handle": _fields[0],"link": _fields[1]}
     flash("Virheellinen syöte yhdessä tai useammassa kentistä. \
         Tarkista syöttämäsi tiedot.", "error")
     return redirect("/management/chats")
@@ -153,7 +169,13 @@ def group_management():
         "group_name": "Ryhmän nimi",
         "restriction_level": "Rajoitustaso",
         "submit": "Lisää ryhmä",
-        "update": "Päivitä"
+        "update": "Päivitä",
+        "tip_header":"Ohjeet ryhmien lisäämiseen",
+        "tip_groupname":"Ryhmän nimen pituus 3-32 merkkiä",
+        "tip_characters":"Sallittuja merkkejä",
+        "tip_letters":"Kirjaimet a-z sekä A-Z",
+        "tip_numbers":"Numerot 0-9",
+        "tip_forbidden":"Erikoismerkit eivät ole salittuja"
     }
     _restriction_opts = [("NONE", "Rajoittamaton"), ("LOGIN", "Kirjautuminen"),
                          ("AGE", "Ikärajoitettu"), ("SEC", "Turvaluokitettu")]
@@ -165,7 +187,7 @@ def group_management():
             local=localized,
             restriction_options=_restriction_opts,
             groups=data)
-    flash("Toiminto vaatii kirjautumisen", "warning")
+    flash("Toiminto vaatii kirjautumisen.", "warning")
     return redirect("/login")
 
 
@@ -241,9 +263,9 @@ def handle_group_update():
             flash("Ryhmän päivittämimnen onnistui", "success")
             return redirect("/management/groups")
         except:   # pylint: disable=bare-except
-            flash("Virheellinen syöte yhdessä tai useammassa kentistä", "warning")
+            flash("Virheellinen syöte yhdessä tai useammassa kentistä. Tarkista antamasi syöte.", "warning")
             return redirect("/management/groups")
-    flash("Virheellinen syöte yhdessä tai useammassa kentistä", "error")
+    flash("Virheellinen syöte yhdessä tai useammassa kentistä. Tarkista antamasi syöte.", "error")
     return redirect("/management/groups")
 
 

@@ -3,6 +3,14 @@
   <h2>{{ local.current_mode }}</h2>
   {% if session.username %}
     <h3>{{ local.add_new }}</h3>
+    <h4>{{ local.tip_header }}</h4>
+    <ul>
+        <li>{{ local.tip_groupname }}</li>
+        <li>{{ local.tip_characters }}:</li>
+        <li>{{ local.tip_letters }}</li>
+        <li>{{ local.tip_numbers }}</li>
+        <li>{{ local.tip_forbidden }}</li>
+    </ul>
     <form action="/handle_group_adding" method="POST" class="vertical">
       <label for="gname">{{ local.group_name }}</label>
       <input name="gname" id="gname" type="text" required></br>

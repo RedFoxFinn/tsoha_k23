@@ -54,10 +54,24 @@ def _calculate_forbidden_score_xss(input_value: str):
     return sum(results)
 
 
-def input_validation(input_value: str):
+def input_validation(input_value: str, handle_mode:bool=False):
+    pattern = re.compile("[a-zA-Z0-9.$£€_\-\+@]{3,32}") if handle_mode else re.compile("[a-zA-Z0-9]{3,32}")
+    disqualifying_pattern = re.compile('[!#%^&*()<>?/\|}{~:;,\'\"´`¨]')
+    if disqualifying_pattern.search(input_value):
+        return False
     sql_injection_hazard_rate = _calculate_forbidden_score_sql(input_value)
     xss_hazard_rate = _calculate_forbidden_score_xss(input_value)
-    return bool(sql_injection_hazard_rate > 32) or bool(xss_hazard_rate > 0)
+    return bool(sql_injection_hazard_rate < 32) and bool(xss_hazard_rate == 0) and bool(2 < len(input_value) <= 32) and bool(pattern.search(input_value))
+
+def link_input_validation(input_value: str):
+    patterns = [
+        re.compile("https://t.me/"),
+        re.compile("t.me/"),
+        re.compile("https://discord.com/channels/"),
+        re.compile("https://twitter.com/messages/compose?recipient_id=")
+    ]
+    results = [1 if p.search(input_value) else 0 for p in patterns]
+    return bool(sum(results) > 0)
 
 
 def _password_validation(input_value: str):

@@ -3,14 +3,34 @@
   <h2>{{ local.current_mode }}</h2>
   {% if session.username %}
     <h3>{{ local.add_moderator }}</h3>
-    <form action="/handle_moderator_adding" method="POST" class="vertical">
-      <label for="handle">{{ local.handle }}</label>
-      <input name="handle" id="handle" type="text" required>
-      <label for="chat_link">{{ local.chat_link }}</label>
-      <input name="chat_link" id="chat_link" type="text" required>
-      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-      <input type="submit" value="{{ local.mod_submit }}">
-    </form>
+    <h4>{{ local.tip_header }}</h4>
+    <ul>
+        <li>{{ local.tip_mod_handle }}</li>
+        <li>{{ local.tip_mod_chat }}</li>
+        <li>{{ local.tip_characters }}:</li>
+        <li>{{ local.tip_letters }}</li>
+        <li>{{ local.tip_numbers }}</li>
+        <li>{{ local.tip_forbidden }}</li>
+    </ul>
+    {% if session.retry_form_values %}
+        <form action="/handle_moderator_adding" method="POST" class="vertical">
+            <label for="handle">{{ local.handle }}</label>
+            <input name="handle" id="handle" type="text" required value="{{session.retry_form_values.handle}}">
+            <label for="chat_link">{{ local.chat_link }}</label>
+            <input name="chat_link" id="chat_link" type="text" required value="{{session.retry_form_values.link}}">
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+            <input type="submit" value="{{ local.mod_submit }}">
+        </form>
+    {% else %}
+        <form action="/handle_moderator_adding" method="POST" class="vertical">
+            <label for="handle">{{ local.handle }}</label>
+            <input name="handle" id="handle" type="text" required>
+            <label for="chat_link">{{ local.chat_link }}</label>
+            <input name="chat_link" id="chat_link" type="text" required>
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+            <input type="submit" value="{{ local.mod_submit }}">
+        </form>
+    {% endif %}
     <h3>{{ local.add_new }}</h3>
     <form action="/handle_chat_adding" method="POST" class="vertical">
       <label for="cname">{{ local.chat_name }}</label>

@@ -54,8 +54,8 @@ def _calculate_forbidden_score_xss(input_value: str):
     return sum(results)
 
 
-def input_validation(input_value: str, handle_mode:bool=False, short_mode:bool=False):
-    pattern = re.compile("[a-zA-Z0-9.$£€_\-\+@]{3,32}") if handle_mode else re.compile("[0-9]{1,4}") if short_mode else re.compile("[a-zA-Z0-9]{3,32}")
+def input_validation(input_value: str, handle_mode:bool=False):
+    pattern = re.compile("[a-zA-Z0-9.$£€_\-\+@]{3,32}") if handle_mode else re.compile("[a-zA-Z0-9]{3,32}")
     disqualifying_pattern = re.compile('[!#%^&*()<>?/\|}{~:;,\'\"´`¨]')
     if disqualifying_pattern.search(input_value):
         return False
@@ -68,7 +68,7 @@ def link_input_validation(input_value: str):
         re.compile("https://t.me/"),
         re.compile("t.me/"),
         re.compile("https://discord.com/channels/"),
-        re.compile("https://twitter.com/messages/compose")
+        re.compile("https://twitter.com/messages/compose?recipient_id=")
     ]
     results = [1 if p.search(input_value) else 0 for p in patterns]
     return bool(sum(results) > 0)

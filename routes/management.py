@@ -101,48 +101,25 @@ def manage_single_chat(id_value: int):
 def handle_chat_adding():
     if request.form["csrf_token"] != session.get("csrf_token"):
         return abort(403)
-    _fields = {
-        "cname":request.form["cname"],
-        "topic":request.form["topic"],
-        "group":request.form["group"],
-        "link":request.form["link"],
-        "mods":request.form["moderators"]
-    }
-    print(_fields)
-    _input_validations = []
-    _input_validations.append(1 if input_validation(_fields["cname"]) else 0)
-    if _fields["topic"].isnumeric():
-        _input_validations.append(1 if input_validation(_fields["topic"], short_mode=True) else 0)
-    else:
-        _input_validations.append(1 if input_validation(_fields["topic"]) else 0)
-    _input_validations.append(1 if _fields["group"].isnumeric() else 0)
-    _input_validations.append(1 if link_input_validation(_fields["link"]) else 0)
-    _input_validations.append(1 if _fields["mods"].isnumeric() else 0)
-    print(_input_validations)
-    if sum(_input_validations) == 5:
-        _fields["topic"] = topics.add_topic(_fields["topic"])
-        input_data = {"cname": _fields["cname"], "topic": int(_fields["topic"]), "group": int(
-            _fields["group"]), "link": _fields["link"], "moderators": [int(_fields["mods"])]}
+    _fields = [
+        request.form["cname"],
+        request.form["topic"],
+        request.form["group"],
+        request.form["link"],
+        request.form["moderators"]
+    ]
+    _input_validations = [
+        1 if input_validation(f) else 0 for f in _fields
+    ]
+    if sum(_input_validations) == 0:
+        _fields[1] = topics.add_topic(_fields[1])
+        input_data = {"cname": _fields[0], "topic": int(_fields[1]), "group": int(
+            _fields[2]), "link": _fields[3], "moderators": [int(mod) for mod in _fields[4]]}
         if chats.add_chat(input_data):
-            _retry_values = session.get("retry_form_values")
-            if _retry_values is not None:
-                del session["retry_form_values"]
             flash("Keskusteluryhmän lisääminen onnistui.", "success")
             return redirect("/management/chats")
-        session["retry_form_values"] = {
-            "cname": _fields["cname"],
-            "topic": _fields["topic"],
-            "group": _fields["group"],
-            "link": _fields["link"]
-        }
         flash("Virheellinen syöte yhdessä tai useammassa kentistä.", "warning")
         return redirect("/management/chats")
-    session["retry_form_values"] = {
-        "cname": _fields["cname"],
-        "topic": _fields["topic"],
-        "group": _fields["group"],
-        "link": _fields["link"]
-    }
     flash("Virheellinen syöte yhdessä tai useammassa kentistä.", "error")
     return redirect("/management/chats")
 

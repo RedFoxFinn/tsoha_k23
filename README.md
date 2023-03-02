@@ -97,23 +97,21 @@ Kirjautumisen onnistumisesta näytetään käyttäjälle viesti ja hänet ohjata
 
 Pääkäyttäjille sovelluksessa on mahdollisuus käyttää hallintatyökaluja, joihin kuuluvat ryhmien (toimialueen kaltainen ominaisuus), keskusteluryhmien ja ylläpitäjien hallinta.
 
-Peruskäyttäjille luodaan keskusteluryhmien lisäämiseen ominaisuus myöhemmin. Samoin kuin ylläpitäjien hallinnan lisäksi käyttäjähallinta.
-
 ![Sovelluksen hallintanäkymän navigointi](/docs/management.png)
 
 Ryhmien hallinnassa pääkäyttäjät voivat luoda uusia ryhmiä tai siirtyä muokkaamaan olemassaolevan ryhmän ominaisuuksia (nimi, rajoitustaso).
 
-Keskusteluryhmien hallinnassa pääkäyttäjä pystyy lisäämään keskusteluryhmien ylläpitäjiä (nimimerkki + linkki privaattikeskusteluun) sekä lisäämään uusia keskusteluryhmiä.
+Keskusteluryhmien hallinnassa käyttäjä pystyy lisäämään keskusteluryhmiä. Lisääjästä tulee automaattisesti moderaattori keskustelulle.
 
-Keskusteluryhmien listaus näytetään myös näkymässä, mutta etusivusta poiketen laajemmilla tiedoilla ja mahdollisuudella siirtyä keskusteluryhmän tietojen muokkaukseen.
+Keskusteluryhmien listaus näytetään myös näkymässä, mutta etusivusta poiketen laajemmilla tiedoilla ja mahdollisuudella siirtyä keskusteluryhmän tietojen muokkaukseen. Keskusteluryhmää voi muokata ainoastaan sille moderaattoriksi merkitty käyttäjä tai pääkäyttäjä(t).
 
-Sovelluksessa on myös kaikille näkyvä osio, statistiikka. Se nimensä mukaisesti esittää yksinkertaisia tilastotietoja sovelluksesta.
+Sovelluksessa on myös kaikille näkyvä osio, statistiikka. Se nimensä mukaisesti esittää tilastotietoja sovelluksesta.
 
 ![Sovelluksen tilastotietonäkymä](/docs/statistics.png)
 
 Kaikille eivät samat tiedot näy, esimerkiksi kirjautumattomille näytetään vain keskusteluryhmien kokonaismäärä ja aiheiden kokonaismäärä.
 
-Sovelluksessa on lisäksi näkymä salasanan vaihtamiseen (ei toimi vielä oikein...)
+Sovelluksessa on lisäksi näkymä salasanan vaihtamiseen.
 ### Tietokanta
 
 Sovellus käyttää PostgreSQL-tietokantaa tiedon pysyväissäilytykseen.
@@ -127,7 +125,8 @@ sovelluksen käyttäjät sisältävä tietokantataulu
 
 - id SERIAL PRIMARY KEY
 - uname TEXT NOT NULL UNIQUE, käyttäjänimi
-- pw_hash TEXT, käyttäjän salasana (kryptattuna)
+- pw_hash TEXT, käyttäjän salasana (kryptattuna),
+- dm_link TEXT NOT NULL UNIQUE, linkki käyttäjän yksityisviestikeskusteluun
 
 #### Admins
 
@@ -137,7 +136,6 @@ pitää listaa sovelluksen käyttäjistä, joilla on ylläpitäjän oikeudet
 
 - id SERIAL PRIMARY KEY
 - user_id INTEGER NOT NULL REFERENCES Users (id)
-- superuser BOOLEAN DEFAULT FALSE
 
 #### Groups
 
@@ -152,6 +150,7 @@ ryhmällä tarkoitetaan joukkoa keskusteluryhmiä, joilla on yhteisiä ominaisuu
   - "LOGIN" osoittaa kyseisen ryhmän olevan kirjautumisen jälkeen näytettävä
   - "AGE" osoittaa kyseisen ryhmän olevan ikärajallinen, tällöin sen linkki näytetään vain ylläpitäjille
   - "SEC" osoittaa kyseisen ryhmän olevan rajoitettu, tällöin se näytetään listassa vain ylläpitäjille
+- admin_id INTEGER NOT NULL REFERENCES Admins (id), kyseisen ryhmän merkitty ylläpitäjä
 
 #### Topics
 
@@ -169,27 +168,16 @@ sovelluksen keskusteluryhmät sisältävä tietokantataulu
 - topic_id INTEGER REFERENCES Topics (id)
 - group_id INTEGER REFERENCES Groups (id)
 - link TEXT NOT NULL
-- moderator_ids INTEGER[], viittaukset keskusteluryhmän ylläpitäjiin
+- moderator_id INTEGER REFERENCES Users (id), viittaukset käyttäjiin
 
-#### Moderators
+#### Records
 
-sovelluksen keskusteluryhmien ylläpitäjät sisältävä tietokantataulu
-
-- id SERIAL PRIMARY KEY
-- handle TEXT NOT NULL UNIQUE
-- chat_link TEXT NOT NULL
-
-#### Requests
-
-sovelluksen tietoihin kohdistuvien muutosten hyväksymispyynnöt sisältävä tietokantataulu
+sovelluksen lokien säilytykseen osoitettu tietokantataulu (toiminnallisuus rakenteilla)
 
 - id SERIAL PRIMARY KEY
-- user_id INTEGER NOT NULL REFERENCES Users (id), muutoksen pyytänyt käyttäjä
-- info_table TEXT NOT NULL, taulu, jonka tietoa pyydetään muutettavan
-- info_id INTEGER NOT NULL, taulun rivi, jota pyydetään muutettavan
-- change_type TEXT NOT NULL, muutostyyppi (DELETE/UPDATE)
-- change_info TEXT[], muutokset,
-- datetime_of_request INTEGER, pyynnön luomisaika (unix-datetime)
+- action TEXT NOT NULL, tapahtuman kuvaus
+- user_id INTEGER NOT NULL REFERENCES Users (id), tapahtuman suorittaneen käyttäjän id
+- action_time TIMESTAMP NOT NULL, tapahtuman aikaleima
 
 </p>
 </details>
@@ -207,16 +195,15 @@ Front endin eli käyttäjälle näkyvän osan toiminnot voidaan listata seuraava
     - ikärajoitetut keskustelut (näytetään listauksessa kirjautuneille, linkki näytetään ylläpitäjille)
     - rajoitetut keskustelut (näytetään listauksessa vain ylläpitäjille)
 - kirjautumisnäkymä
-- hallintanäkymä (ylläpitäjät)
+- hallintanäkymä
   - keskusteluryhmän lisäys
-  - keskusteluryhmän linkin päivittäminen
-  - keskusteluryhmän nimen päivittäminen
-  - keskusteluryhmän ryhmän vaihtaminen (superuser TRUE -admin tai erillinen hyväksyntä em. adminilta)
-  - keskusteluryhmän ylläpitäjien päivittäminen
-  - keskusteluryhmän poistaminen (superuser TRUE -admin tai erillinen hyväksyntä em. adminilta)
-  - ryhmän lisääminen
-  - ryhmän poistaminen (superuser TRUE -admin tai erillinen hyväksyntä em. adminilta)
-  - ylläpitäjästatuksien muuttaminen (superuser TRUE -admin)
+  - keskusteluryhmän linkin päivittäminen (moderaattori/admin)
+  - keskusteluryhmän nimen päivittäminen (moderaattori/admin)
+  - keskusteluryhmän ryhmän vaihtaminen (moderaattori/admin)
+  - keskusteluryhmän poistaminen (moderaattori/admin)
+  - ryhmän lisääminen (admin)
+  - ryhmän poistaminen (admin)
+  - ylläpitäjästatuksien muuttaminen (admin)
   - sovelluksen tilastotiedot
 - salasanan vaihtamisen näkymä
 
@@ -254,7 +241,11 @@ Kirjautumistiedoista salasanan vaihtaminen on olennainen toiminnallisuus ja se o
 
 #### Hallintanäkymä
 
-Hallintanäkymä ylläpitäjille. Näkymästä käsin voidaan lisätä, päivittää ja poistaa keskusteluryhmiä, lisätä ja poistaa ryhmiä sekä muuttaa ylläpitäjästatuksia. Näkymässä on esitettynä myös sovelluksen tilastotietoja.
+Näkymästä käsin voidaan lisätä, päivittää ja poistaa keskusteluryhmiä, lisätä ja poistaa ryhmiä sekä muuttaa ylläpitäjästatuksia.
+
+#### Statistiikkanäkymä
+
+Näkymässä esitetään kirjautuneille tilastotietoa sovelluksesta. Tietojen määrä ja tarkkuus riippuu osittain käyttäjän statuksesta l. onko tämä käyttäjä vai pääkäyttäjä.
 
 ## Teknologiat
 

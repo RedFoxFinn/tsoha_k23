@@ -46,7 +46,7 @@ def handle_password_change():
     _input_validations = [
         1 if input_validation(f) else 0 for f in __fields
     ]
-    if sum(__field_validations) == 4 and sum(_input_validations) == 0:
+    if sum(__field_validations) == 4 and sum(_input_validations) == 4:
         login_data = {"un": __fields[0]}
         user_result = DB.session.execute(
             __user_data_request, login_data)   # pylint: disable=no-member

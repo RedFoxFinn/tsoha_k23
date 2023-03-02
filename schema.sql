@@ -29,6 +29,6 @@ CREATE TABLE Chats (
 CREATE TABLE Records (
     id SERIAL PRIMARY KEY,
     action TEXT NOT NULL,
-    user_id INTEGER REFERENCES Users (id),
+    user_id INTEGER NOT NULL REFERENCES Users (id),
     action_time TIMESTAMP NOT NULL
 );

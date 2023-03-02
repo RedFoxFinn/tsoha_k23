@@ -36,9 +36,9 @@ def stats():
     _localized_stats = [
         (
             localized_fields[key],
-            value 
-                if type(value) in [int,float]
-                else [(localized_fields[val[0]],val[1]) for val in value]
+            value
+            if type(value) in [int, float]
+            else [(localized_fields[val[0]], val[1]) for val in value]
         ) for (key, value) in _stats]
-    _sorted_localized = sorted(_localized_stats, key= lambda value: value[0])
+    _sorted_localized = sorted(_localized_stats, key=lambda value: value[0])
     return render_template("statistics.html", local=localized, stats=_sorted_localized)

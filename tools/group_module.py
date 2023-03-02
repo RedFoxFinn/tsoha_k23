@@ -71,7 +71,7 @@ def update_group(id_value: int, gname: str, restriction: str):
         DB.session.execute(_sql, _update_data)    # pylint: disable=no-member
         DB.session.commit()  # pylint: disable=no-member
         return True
-    except:
+    except:  # pylint: disable=bare-except
         return False
 
 

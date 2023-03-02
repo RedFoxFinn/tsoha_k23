@@ -2,7 +2,6 @@
 from flask import abort, redirect, render_template, request, session, flash
 
 from app import application
-from tools.database_module import DB
 from tools import admin_module as admins,\
     chat_module as chats,\
     group_module as groups,\
@@ -47,9 +46,9 @@ def chat_management():
         "link": "Linkki",
         "submit": "Lisää keskusteluryhmä",
         "update": "Päivitä",
-        "tip_characters":"Sallittuja merkkejä",
-        "tip_letters":"Kirjaimet a-z sekä A-Z",
-        "tip_numbers":"Numerot 0-9"
+        "tip_characters": "Sallittuja merkkejä",
+        "tip_letters": "Kirjaimet a-z sekä A-Z",
+        "tip_numbers": "Numerot 0-9"
     }
     _topic_data = topics.get_topics()
     _group_data = groups.get_groups()
@@ -62,11 +61,13 @@ def chat_management():
         _chats += chats.get_security_restricted_chats()
 
     return render_template("chat_management.html",
-        local=localized,
-        topic_options=_topic_data if len(_topic_data) > 0 else [],
-        group_options=_group_data if len(_group_data) > 0 else [],
-        showable=_chats,
-        management="True")
+                           local=localized,
+                           topic_options=_topic_data if len(
+                               _topic_data) > 0 else [],
+                           group_options=_group_data if len(
+                               _group_data) > 0 else [],
+                           showable=_chats,
+                           management="True")
 
 
 @application.route("/management/chats/<int:id_value>")
@@ -88,9 +89,9 @@ def manage_single_chat(id_value: int):
         "link": "Linkki",
         "mod": "Ylläpitäjä",
         "submit": "Päivitä keskusteluryhmä",
-        "tip_characters":"Sallittuja merkkejä",
-        "tip_letters":"Kirjaimet a-z sekä A-Z",
-        "tip_numbers":"Numerot 0-9"
+        "tip_characters": "Sallittuja merkkejä",
+        "tip_letters": "Kirjaimet a-z sekä A-Z",
+        "tip_numbers": "Numerot 0-9"
     }
 
     _topic_data = topics.get_topics()
@@ -99,28 +100,31 @@ def manage_single_chat(id_value: int):
 
     _chat_data = chats.get_chat_by_id(id_value)
     if _chat_data is None:
-        flash("Keskusteluryhmää ei löydy.","warning")
+        flash("Keskusteluryhmää ei löydy.", "warning")
         return redirect("/management/chats")
     _admin_data = admins.check_admin_by_uname(_user)
     if _chat_data[6] != _user:
         if _admin_data is None:
-            flash("Et voi muokata tätä keskusteluryhmää: puuttuvat oikeudet.","error")
+            flash("Et voi muokata tätä keskusteluryhmää: puuttuvat oikeudet.", "error")
             return redirect("/management/chats")
     return render_template("single_chat_management.html",
-        local=localized,
-        chat={
-            "id": _chat_data[0],
-            "cname": _chat_data[1],
-            "link": _chat_data[2],
-            "topic": _chat_data[3],
-            "group": _chat_data[4],
-            "restriction": _chat_data[5],
-            "moderator": _chat_data[6]
-        },
-        topic_options=_topic_data if len(_topic_data) > 0 else [],
-        group_options=_group_data if len(_group_data) > 0 else [],
-        moderator_options=_moderator_data if len(_moderator_data) > 0 else []
-    )
+                           local=localized,
+                           chat={
+                               "id": _chat_data[0],
+                               "cname": _chat_data[1],
+                               "link": _chat_data[2],
+                               "topic": _chat_data[3],
+                               "group": _chat_data[4],
+                               "restriction": _chat_data[5],
+                               "moderator": _chat_data[6]
+                           },
+                           topic_options=_topic_data if len(
+                               _topic_data) > 0 else [],
+                           group_options=_group_data if len(
+                               _group_data) > 0 else [],
+                           moderator_options=_moderator_data if len(
+                               _moderator_data) > 0 else []
+                           )
 
 
 @application.route("/handle_chat_adding", methods=["POST"])
@@ -129,23 +133,26 @@ def handle_chat_adding():
         return abort(403)
     _uname = session.get("username")
     if _uname is None:
-        flash("Toiminto vaatii kirjautumisen.","warning")
+        flash("Toiminto vaatii kirjautumisen.", "warning")
         return redirect("/login")
     _user_data = users.user_by_uname(_uname)
     _fields = {
-        "cname":request.form["cname"],
-        "topic":request.form["topic"],
-        "group":request.form["group"],
-        "link":request.form["link"]
+        "cname": request.form["cname"],
+        "topic": request.form["topic"],
+        "group": request.form["group"],
+        "link": request.form["link"]
     }
     _input_validations = []
     _input_validations.append(1 if input_validation(_fields["cname"]) else 0)
     if _fields["topic"].isnumeric():
-        _input_validations.append(1 if input_validation(_fields["topic"], short_mode=True) else 0)
+        _input_validations.append(1 if input_validation(
+            _fields["topic"], short_mode=True) else 0)
     else:
-        _input_validations.append(1 if input_validation(_fields["topic"]) else 0)
+        _input_validations.append(
+            1 if input_validation(_fields["topic"]) else 0)
     _input_validations.append(1 if _fields["group"].isnumeric() else 0)
-    _input_validations.append(1 if link_input_validation(_fields["link"]) else 0)
+    _input_validations.append(
+        1 if link_input_validation(_fields["link"]) else 0)
     if sum(_input_validations) < 4:
         session["retry_form_values"] = _fields
         flash("Virheellinen syöte yhdessä tai useammassa kentistä.", "error")
@@ -175,25 +182,27 @@ def handle_chat_update():
         return abort(403)
     _uname = session.get("username")
     if _uname is None:
-        flash("Toiminto vaatii kirjautumisen.","warning")
+        flash("Toiminto vaatii kirjautumisen.", "warning")
         return redirect("/login")
-    _user_data = users.user_by_uname(_uname)
     _fields = {
-        "id":request.form["id"],
-        "cname":request.form["cname"],
-        "topic":request.form["topic"],
-        "group":request.form["group"],
-        "link":request.form["link"],
-        "moderator":request.form["moderator"]
+        "id": request.form["id"],
+        "cname": request.form["cname"],
+        "topic": request.form["topic"],
+        "group": request.form["group"],
+        "link": request.form["link"],
+        "moderator": request.form["moderator"]
     }
     _input_validations = []
     _input_validations.append(1 if input_validation(_fields["cname"]) else 0)
     if _fields["topic"].isnumeric():
-        _input_validations.append(1 if input_validation(_fields["topic"], short_mode=True) else 0)
+        _input_validations.append(1 if input_validation(
+            _fields["topic"], short_mode=True) else 0)
     else:
-        _input_validations.append(1 if input_validation(_fields["topic"]) else 0)
+        _input_validations.append(
+            1 if input_validation(_fields["topic"]) else 0)
     _input_validations.append(1 if _fields["group"].isnumeric() else 0)
-    _input_validations.append(1 if link_input_validation(_fields["link"]) else 0)
+    _input_validations.append(
+        1 if link_input_validation(_fields["link"]) else 0)
     if sum(_input_validations) < 4:
         session["retry_form_values"] = _fields
         flash("Virheellinen syöte yhdessä tai useammassa kentistä.", "error")
@@ -214,7 +223,8 @@ def handle_chat_update():
         flash("Keskusteluryhmän päivittäminen onnistui.", "success")
         return redirect("/management/chats")
     session["retry_form_values"] = _input_data
-    flash("Virheellinen syöte yhdessä tai useammassa kentistä. Tarkista antamasi syöte.", "warning")
+    flash("Virheellinen syöte yhdessä tai useammassa kentistä. \
+        Tarkista antamasi syöte.", "warning")
     return redirect("/management/chats")
 
 
@@ -222,7 +232,7 @@ def handle_chat_update():
 def handle_chat_removal():
     _user = session.get("username")
     if _user is None:
-        flash("Toiminto vaatii kirjautumisen","warning")
+        flash("Toiminto vaatii kirjautumisen", "warning")
         return redirect("/login")
     _id_value = request.form["id"]
     _chat = chats.get_chat_by_id(_id_value)
@@ -230,12 +240,12 @@ def handle_chat_removal():
     if _chat[6] != _user:
         _admin_data = admins.check_admin_by_uname(_user)
         if _admin_data is None:
-            flash("Sinulla ei ole tarvittavia oikeuksia tähän toimintoon.","error")
+            flash("Sinulla ei ole tarvittavia oikeuksia tähän toimintoon.", "error")
             return redirect("/management/chats")
     if chats.remove_chat(_id_value):
-        flash("Keskusteluryhmä poistettu onnistuneesti.","success")
+        flash("Keskusteluryhmä poistettu onnistuneesti.", "success")
         return redirect("/management/chats")
-    flash("Keskusteluryhmää ei poistettu: tietoja ei löytynyt.","error")
+    flash("Keskusteluryhmää ei poistettu: tietoja ei löytynyt.", "error")
     return redirect(f"/management/chats/{_id_value}")
 
 
@@ -253,12 +263,12 @@ def group_management():
         "restriction_level": "Rajoitustaso",
         "submit": "Lisää ryhmä",
         "update": "Päivitä",
-        "tip_header":"Ohjeet ryhmien lisäämiseen",
-        "tip_groupname":"Ryhmän nimen pituus 3-32 merkkiä",
-        "tip_characters":"Sallittuja merkkejä",
-        "tip_letters":"Kirjaimet a-z sekä A-Z",
-        "tip_numbers":"Numerot 0-9",
-        "tip_forbidden":"Erikoismerkit eivät ole salittuja"
+        "tip_header": "Ohjeet ryhmien lisäämiseen",
+        "tip_groupname": "Ryhmän nimen pituus 3-32 merkkiä",
+        "tip_characters": "Sallittuja merkkejä",
+        "tip_letters": "Kirjaimet a-z sekä A-Z",
+        "tip_numbers": "Numerot 0-9",
+        "tip_forbidden": "Erikoismerkit eivät ole salittuja"
     }
     _restriction_opts = [("NONE", "Rajoittamaton"), ("LOGIN", "Kirjautuminen"),
                          ("AGE", "Ikärajoitettu"), ("SEC", "Turvaluokitettu")]
@@ -278,11 +288,11 @@ def group_management():
 def manage_single_group(id_value: int):
     _user = session.get("username")
     if _user is None:
-        flash("Toiminto vaatii kirjautumisen","warning")
+        flash("Toiminto vaatii kirjautumisen", "warning")
         return redirect("/login")
     _admin_data = admins.check_admin_by_uname(_user)
     if _admin_data is None:
-        flash("Toiminto vaatii käyttäjältä ylläpitäjän oikeudet.","error")
+        flash("Toiminto vaatii käyttäjältä ylläpitäjän oikeudet.", "error")
         return redirect("/")
     _group = groups.get_group_by_id(id_value)
     old_data = {
@@ -319,7 +329,7 @@ def handle_group_adding():
         return abort(403)
     _uname = session.get("username")
     if _uname is None:
-        flash("Toiminto vaatii kirjautumisen","warning")
+        flash("Toiminto vaatii kirjautumisen", "warning")
         return redirect("/login")
     _input = {
         "gname": request.form["gname"],
@@ -330,22 +340,23 @@ def handle_group_adding():
         1 if input_validation(_input["restriction"]) else 0
     ]
     if sum(_input_validations) < 2:
-        flash("Virheellinen syöte yhdessä tai useammassa kentistä. Tarkista antamasi syöte.", "error")
+        flash("Virheellinen syöte yhdessä tai useammassa kentistä. \
+            Tarkista antamasi syöte.", "error")
         return redirect("/management/groups")
     _admin_data = admins.check_admin_by_uname(_uname)
     if _admin_data is None:
-        flash("Toiminto vaatii käyttäjältä ylläpitäjän oikeudet.","error")
+        flash("Toiminto vaatii käyttäjältä ylläpitäjän oikeudet.", "error")
         return redirect("/")
-    if groups.add_group(_input["gname"],_input["restriction"],_admin_data[0]):
+    if groups.add_group(_input["gname"], _input["restriction"], _admin_data[0]):
         _retry_values = session.get("retry_form_values")
         if _retry_values is not None:
             del session["retry_form_values"]
         flash("Ryhmän lisääminen onnistui", "success")
         return redirect("/management/groups")
-    else:
-        session["retry_form_values"] = _input
-        flash("Ryhmä on jo olemassa. Valitse toinen nimi tai käytä olemassaolevaa ryhmää.", "warning")
-        return redirect("/management/groups")
+    session["retry_form_values"] = _input
+    flash("Ryhmä on jo olemassa. \
+        Valitse toinen nimi tai käytä olemassaolevaa ryhmää.", "warning")
+    return redirect("/management/groups")
 
 
 @application.route("/handle_group_update", methods=["POST"])
@@ -354,7 +365,7 @@ def handle_group_update():
         return abort(403)
     _uname = session.get("username")
     if _uname is None:
-        flash("Toiminto vaatii kirjautumisen","warning")
+        flash("Toiminto vaatii kirjautumisen", "warning")
         return redirect("/login")
     _input = {
         "gname": request.form["gname"],
@@ -366,7 +377,8 @@ def handle_group_update():
         1 if input_validation(_input["restriction"]) else 0
     ]
     if sum(_input_validations) < 2:
-        flash("Virheellinen syöte yhdessä tai useammassa kentistä. Tarkista antamasi syöte.", "error")
+        flash("Virheellinen syöte yhdessä tai useammassa kentistä. \
+            Tarkista antamasi syöte.", "error")
         return redirect("/management/groups")
     if groups.update_group(int(_input["id"]), _input["gname"], _input["restriction"]):
         _retry_values = session.get("retry_form_values")
@@ -374,10 +386,10 @@ def handle_group_update():
             del session["retry_form_values"]
         flash("Ryhmän päivittämimnen onnistui", "success")
         return redirect("/management/groups")
-    else:
-        session["retry_form_values"] = _input
-        flash("Virheellinen syöte yhdessä tai useammassa kentistä. Tarkista antamasi syöte.", "warning")
-        return redirect(f"/management/groups/{_input['id']}")
+    session["retry_form_values"] = _input
+    flash("Virheellinen syöte yhdessä tai useammassa kentistä. \
+        Tarkista antamasi syöte.", "warning")
+    return redirect(f"/management/groups/{_input['id']}")
 
 
 @application.route("/management/admins")

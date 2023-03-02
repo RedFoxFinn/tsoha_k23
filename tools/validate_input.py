@@ -49,20 +49,32 @@ def _calculate_forbidden_score_sql(input_value: str):
 
 def _calculate_forbidden_score_xss(input_value: str):
     patterns = [re.compile(
-        "<[a-zA-Z]{1,9}[1-9]{0,2}>"), re.compile("</[a-zA-Z]{1,9}[1-9]{0,2}>")]
+        "<[a-zA-Z]{1,9}[1-9]{0,2}>"), re.compile("</[a-zA-Z]{1,9}[1-9]{0,2}>")]  # pylint: disable=anomalous-backslash-in-string
     results = [1 if p.search(input_value) else 0 for p in patterns]
     return sum(results)
 
 
 def input_validation(input_value: str, handle_mode: bool = False, short_mode: bool = False):
-    pattern = re.compile("[a-zA-Z0-9.$£€_\-\+@]{5,32}") if handle_mode else re.compile(
-        "[0-9]{1,4}") if short_mode else re.compile("[a-zA-Z0-9]{3,32}")
-    disqualifying_pattern = re.compile('[!#%^&*()<>?/\|}{~:;,\'\"´`¨]')
+    pattern = None
+    if handle_mode:
+        pattern = re.compile(
+            "[a-zA-Z0-9.$£€_\-\+@]{5,32}")  # pylint: disable=anomalous-backslash-in-string
+    elif short_mode:
+        pattern = re.compile(
+            "[0-9]{1,4}")  # pylint: disable=anomalous-backslash-in-string
+    else:
+        pattern = re.compile(
+            "[a-zA-Z0-9]{3,32}")   # pylint: disable=anomalous-backslash-in-string
+    disqualifying_pattern = re.compile(
+        '[!#%^&*()<>?/\|}{~:;,\'\"´`¨]')  # pylint: disable=anomalous-backslash-in-string
     if disqualifying_pattern.search(input_value):
         return False
     sql_injection_hazard_rate = _calculate_forbidden_score_sql(input_value)
     xss_hazard_rate = _calculate_forbidden_score_xss(input_value)
-    return bool(sql_injection_hazard_rate < 32) and bool(xss_hazard_rate == 0) and bool(2 < len(input_value) <= 32) and bool(pattern.search(input_value))
+    return bool(sql_injection_hazard_rate < 32) and \
+        bool(xss_hazard_rate == 0) and \
+        bool(2 < len(input_value) <= 32) and \
+        bool(pattern.search(input_value))
 
 
 def link_input_validation(input_value: str):
@@ -77,7 +89,8 @@ def link_input_validation(input_value: str):
 
 
 def _password_validation(input_value: str):
-    pattern = re.compile("[a-zA-Z0-9.$£€_\-\+@]{8,32}")
+    pattern = re.compile(
+        "[a-zA-Z0-9.$£€_\-\+@]{8,32}")  # pylint: disable=anomalous-backslash-in-string
     return bool(
         input_value is not None
         and 8 <= len(input_value) <= 32
@@ -85,7 +98,8 @@ def _password_validation(input_value: str):
 
 
 def _username_validation(input_value: str):
-    pattern = re.compile("[a-zA-Z0-9.$£€_\-\+@]{5,32}")
+    pattern = re.compile(
+        "[a-zA-Z0-9.$£€_\-\+@]{5,32}")  # pylint: disable=anomalous-backslash-in-string
     return bool(
         input_value is not None
         and 5 <= len(input_value) <= 32

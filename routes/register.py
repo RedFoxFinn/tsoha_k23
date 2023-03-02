@@ -13,26 +13,26 @@ def register():
     if _user is not None:
         return redirect("/")
     localized = {
-        "text":"Rekisteröityminen palveluun",
-        "username":"Käyttäjänimi",
-        "password":"Salasana",
-        "dm_link":"Linkki yksityiskeskusteluun",
-        "repeat_password":"Toista salasana",
-        "registration_code":"Rekisteröitymistunnus",
-        "submit":"Rekisteröidy",
-        "tip_header":"Ohjeet rekisteröitymiseen",
-        "tip_username":"Käyttäjätunnuksen pituus 5-32 merkkiä",
-        "tip_password":"Salasanan pituus 8-32 merkkiä",
+        "text": "Rekisteröityminen palveluun",
+        "username": "Käyttäjänimi",
+        "password": "Salasana",
+        "dm_link": "Linkki yksityiskeskusteluun",
+        "repeat_password": "Toista salasana",
+        "registration_code": "Rekisteröitymistunnus",
+        "submit": "Rekisteröidy",
+        "tip_header": "Ohjeet rekisteröitymiseen",
+        "tip_username": "Käyttäjätunnuksen pituus 5-32 merkkiä",
+        "tip_password": "Salasanan pituus 8-32 merkkiä",
         "tip_dmlink": "Linkin muoto: https://t.me/*käyttäjätunnus*",
-        "tip_characters":"Sallittuja merkkejä",
-        "tip_letters":"Kirjaimet a-z sekä A-Z",
-        "tip_numbers":"Numerot 0-9",
-        "tip_forbidden":"Sallitut erikoismerkit . $ € £ _ - + @",
-        "tip_uname":"5-32 merkkiä",
-        "tip_pw":"8-32 merkkiä",
+        "tip_characters": "Sallittuja merkkejä",
+        "tip_letters": "Kirjaimet a-z sekä A-Z",
+        "tip_numbers": "Numerot 0-9",
+        "tip_forbidden": "Sallitut erikoismerkit . $ € £ _ - + @",
+        "tip_uname": "5-32 merkkiä",
+        "tip_pw": "8-32 merkkiä",
         "tip_dm_link": "https://t.me/..."
     }
-    return render_template("registration.html",locals=localized)
+    return render_template("registration.html", locals=localized)
 
 
 @application.route("/handle_registration", methods=["POST"])
@@ -58,21 +58,26 @@ def handle_registration():
     ]
     if _input["reg_code"] != config.REG_CODE:
         session["retry_form_values"] = _input
-        flash("Väärä rekisteröitymistunnus. Tarkista tietojesi oikeellisuus.","warning")
+        flash("Väärä rekisteröitymistunnus. \
+            Tarkista tietojesi oikeellisuus.", "warning")
         return redirect("/register")
-    _pw_validation = validate_password_on_register(_input["pw1"], _input["pw2"])
+    _pw_validation = validate_password_on_register(
+        _input["pw1"], _input["pw2"])
     if _pw_validation is None:
         session["retry_form_values"] = _input
-        flash("Salasanasi eivät vastaa toisiaan. Tarkista tietojesi oikeellisuus.","warning")
+        flash("Salasanasi eivät vastaa toisiaan. \
+            Tarkista tietojesi oikeellisuus.", "warning")
         return redirect("/register")
     if sum(__input_validations) == 5 and sum(__field_validations) == 3:
-        _result = users.register(_input["uname"], _pw_validation, _input["dm_link"])
+        _result = users.register(
+            _input["uname"], _pw_validation, _input["dm_link"])
         if _result is not None:
             _retry_values = session.get("retry_form_values")
             if _retry_values is not None:
                 del session["retry_form_values"]
             flash("Rekisteröityminen onnistui!", "success")
-            if (_result[0] == 1 or users.count() == 1) and admins.register_admin(_result[0]):
+            if (_result[0] == 1 or users.count() == 1) and \
+                    admins.register_admin(_result[0]):
                 flash("Tunnus rekisteröity pääkäyttäjäksi", "success")
             return redirect("/login")
         session["retry_form_values"] = _input

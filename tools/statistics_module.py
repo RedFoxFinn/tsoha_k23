@@ -19,12 +19,12 @@ def _get_chat_count():
 
 def _get_chat_count_by_restriction():
     _data = chats.count_by_restrictions()
-    return ("restriction_chats",_data)
+    return ("restriction_chats", _data)
 
 
 def _get_average_chat_count_per_restriction():
     _data = chats.average_chats_per_restriction()
-    return ("average_chats",_data)
+    return ("average_chats", _data)
 
 
 def _get_group_count():

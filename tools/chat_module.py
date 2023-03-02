@@ -91,7 +91,7 @@ def add_chat(chat_insert_data: dict):
 
 
 def update_chat(chat_update_data: dict):
-    _sql = f"Update Chats SET cname=:cname,\
+    _sql = "Update Chats SET cname=:cname,\
         topic_id=:topic,\
         group_id=:group,\
         link=:link,\
@@ -99,19 +99,19 @@ def update_chat(chat_update_data: dict):
         WHERE id=:id"
     try:
         DB.session.execute(_sql, chat_update_data)  # pylint: disable=no-member
-        DB.session.commit() # pylint: disable=no-member
+        DB.session.commit()  # pylint: disable=no-member
         return True
-    except: # pylint: disable=bare-except
-        return False    
+    except:  # pylint: disable=bare-except
+        return False
 
 
 def remove_chat(id_value: int):
     _sql = f"DELETE FROM Chats WHERE id={id_value}"
     try:
         DB.session.execute(_sql)    # pylint: disable=no-member
-        DB.session.commit() # pylint: disable=no-member
+        DB.session.commit()  # pylint: disable=no-member
         return True
-    except: # pylint: disable=bare-except
+    except:  # pylint: disable=bare-except
         return False
 
 
@@ -156,7 +156,7 @@ def count_by_restrictions():
     _result = DB.session.execute(_sql)    # pylint: disable=no-member
     _data = _result.fetchall()
     return _data
-    
+
 
 def average_chats_per_restriction():
     """
@@ -168,4 +168,4 @@ def average_chats_per_restriction():
         FROM (SELECT DISTINCT restriction FROM Groups) AS GR"
     _result = DB.session.execute(_sql)  # pylint: disable=no-member
     _data = _result.fetchall()[0]
-    return round(float(_data[0]),1)
+    return round(float(_data[0]), 1)

@@ -5,15 +5,18 @@
   <ul>
     <li>{{ locals.tip_username }}</li>
     <li>{{ locals.tip_password }}</li>
+    <li>{{ locals.tip_dmlink }}</li>
     <li>{{ locals.tip_characters }}:</li>
     <li>{{ locals.tip_letters }}</li>
     <li>{{ locals.tip_numbers }}</li>
     <li>{{ locals.tip_forbidden }}</li>
   </ul>
   {% if session.retry_form_values %}
-    <form action="/handle_registration" method="POST" class="vertical">
+    <br action="/handle_registration" method="POST" class="vertical">
         <label for="new_username">{{ locals.username }}</label>
         <input type="text" name="new_username" id="new_username" required placeholder="{{locals.tip_uname}}" value="{{session.retry_form_values.username}}"><br/>
+        <label for="new_dm_link">{{ locals.dm_link }}</label>
+        <input type="text" name="new_dm_link" id="new_dm_link" required placeholder="{{locals.tip_dm_link}}" value="{{session.retry_form_values.dm_link}}"></br>
         <label for="new_password">{{ locals.password }}</label>
         <input type="password" name="new_password" id="new_password" required placeholder="{{locals.tip_pw}}" value="{{session.retry_form_values.password}}"><br/>
         <label for="new_password_repeat">{{ locals.repeat_password }}</label>
@@ -26,6 +29,8 @@
     <form action="/handle_registration" method="POST" class="vertical">
         <label for="new_username">{{ locals.username }}</label>
         <input type="text" name="new_username" id="new_username" required placeholder="{{locals.tip_uname}}"><br/>
+        <label for="new_dm_link">{{ locals.dm_link }}</label>
+        <input type="text" name="new_dm_link" id="new_dm_link" required placeholder="{{locals.tip_dm_link}}"></br>
         <label for="new_password">{{ locals.password }}</label>
         <input type="password" name="new_password" id="new_password" required placeholder="{{locals.tip_pw}}"><br/>
         <label for="new_password_repeat">{{ locals.repeat_password }}</label>

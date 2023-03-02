@@ -16,7 +16,7 @@
     <a href="/login">Kirjautuminen</a>
     <a href="/register">Rekisteröityminen</a>
   {% endif %}
-  {% if session.username and session.user_status == "ADMIN" or session.user_status == "SUPER" %}
+  {% if session.username %}
     <a href="/management">Hallinta</a>
   {% endif %}
   <a href="/statistics">Statistiikka</a>

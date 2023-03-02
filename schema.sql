@@ -1,17 +1,18 @@
 CREATE TABLE Users (
   id SERIAL PRIMARY KEY,
   uname TEXT NOT NULL UNIQUE,
-  pw_hash TEXT NOT NULL
+  pw_hash TEXT NOT NULL,
+  dm_link TEXT NOT NULL UNIQUE
 );
 CREATE TABLE Admins (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL REFERENCES Users (id),
-  superuser BOOLEAN DEFAULT FALSE
+  user_id INTEGER NOT NULL REFERENCES Users (id)
 );
 CREATE TABLE Groups (
   id SERIAL PRIMARY KEY,
   gname TEXT NOT NULL UNIQUE,
-  restriction TEXT NOT NULL
+  restriction TEXT NOT NULL,
+  admin_id INTEGER NOT NULL REFERENCES Admins (id)
 );
 CREATE TABLE Topics (
   id SERIAL PRIMARY KEY,
@@ -23,19 +24,11 @@ CREATE TABLE Chats (
   topic_id INTEGER REFERENCES Topics (id),
   group_id INTEGER REFERENCES Groups (id),
   link TEXT NOT NULL,
-  moderator_ids INTEGER[]
+  moderator_id INTEGER REFERENCES Users (id)
 );
-CREATE TABLE Moderators (
-  id SERIAL PRIMARY KEY,
-  handle TEXT NOT NULL UNIQUE,
-  chat_links TEXT[] NOT NULL
-);
-CREATE TABLE Requests (
-  id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL REFERENCES Users (id),
-  info_table TEXT NOT NULL,
-  info_id INTEGER NOT NULL,
-  change_type TEXT NOT NULL,
-  change_info TEXT[],
-  datetime_of_request INTEGER
+CREATE TABLE Records (
+    id SERIAL PRIMARY KEY,
+    action TEXT NOT NULL,
+    user_id INTEGER REFERENCES Users (id),
+    action_time TIMESTAMP NOT NULL
 );

@@ -16,73 +16,69 @@ def register():
         "text":"Rekisteröityminen palveluun",
         "username":"Käyttäjänimi",
         "password":"Salasana",
+        "dm_link":"Linkki yksityiskeskusteluun",
         "repeat_password":"Toista salasana",
         "registration_code":"Rekisteröitymistunnus",
         "submit":"Rekisteröidy",
         "tip_header":"Ohjeet rekisteröitymiseen",
         "tip_username":"Käyttäjätunnuksen pituus 5-32 merkkiä",
         "tip_password":"Salasanan pituus 8-32 merkkiä",
+        "tip_dmlink": "Linkin muoto: https://t.me/*käyttäjätunnus*",
         "tip_characters":"Sallittuja merkkejä",
         "tip_letters":"Kirjaimet a-z sekä A-Z",
         "tip_numbers":"Numerot 0-9",
-        "tip_forbidden":"Erikoismerkit eivät ole salittuja",
+        "tip_forbidden":"Sallitut erikoismerkit . $ € £ _ - + @",
         "tip_uname":"5-32 merkkiä",
-        "tip_pw":"8-32 merkkiä"
+        "tip_pw":"8-32 merkkiä",
+        "tip_dm_link": "https://t.me/..."
     }
     return render_template("registration.html",locals=localized)
 
 
 @application.route("/handle_registration", methods=["POST"])
 def handle_registration():
-    __fields = [
-        request.form["new_username"],
-        request.form["new_password"],
-        request.form["new_password_repeat"],
-        request.form["registration_code"]
-    ]
+    _input = {
+        "uname": request.form["new_username"],
+        "pw1": request.form["new_password"],
+        "pw2": request.form["new_password_repeat"],
+        "dm_link": request.form["new_dm_link"],
+        "reg_code": request.form["registration_code"]
+    }
     __field_validations = [
-        1 if validate_reg_or_log(__fields[0], "USERNAME") else 0,
-        1 if validate_reg_or_log(__fields[1], "PASSWORD") else 0,
-        1 if validate_reg_or_log(__fields[2], "PASSWORD") else 0
+        1 if validate_reg_or_log(_input["uname"], "USERNAME") else 0,
+        1 if validate_reg_or_log(_input["pw1"], "PASSWORD") else 0,
+        1 if validate_reg_or_log(_input["pw2"], "PASSWORD") else 0
     ]
     __input_validations = [
-        1 if input_validation(f) else 0 for f in __fields
+        1 if input_validation(_input["uname"]) else 0,
+        1 if input_validation(_input["uname"]) else 0,
+        1 if input_validation(_input["uname"]) else 0,
+        1 if input_validation(_input["uname"]) else 0,
+        1 if input_validation(_input["uname"]) else 0
     ]
-    if sum(__input_validations) == 0 and sum(__field_validations) == 3:
-        validation = validate_password_on_register(__fields[1], __fields[2])
-        if __fields[3] == config.REG_CODE and validation is not None:
-            _result = users.register(__fields[0], validation)
-            if _result is not None:
-                _retry_values = session.get("retry_form_values")
-                if _retry_values is not None:
-                    del session["retry_form_values"]
-                flash("Rekisteröityminen onnistui!", "success")
-                if (_result[0] == 1 or users.count() == 1) and admins.register_admin(_result[0]):
-                    flash("Tunnus rekisteröity pääkäyttäjäksi", "success")
-                return redirect("/login")
-            session["retry_form_values"] = {
-                "username": __fields[0],
-                "password": __fields[1],
-                "pw_retype": __fields[2],
-                "reg_code": __fields[3]
-            }
-            flash("Käyttäjätunnus on jo käytössä", "info")
-            return redirect("/register")
-        session["retry_form_values"] = {
-            "username": __fields[0],
-            "password": __fields[1],
-            "pw_retype": __fields[2],
-            "reg_code": __fields[3]
-        }
-        flash("Virheellinen syöte yhdessä tai useammassa kentistä. \
-            Tarkista antamasi rekisteröitymistunnus tai salasanakentät.", "warning")
+    if _input["reg_code"] != config.REG_CODE:
+        session["retry_form_values"] = _input
+        flash("Väärä rekisteröitymistunnus. Tarkista tietojesi oikeellisuus.","warning")
         return redirect("/register")
-    session["retry_form_values"] = {
-        "username": __fields[0],
-        "password": __fields[1],
-        "pw_retype": __fields[2],
-        "reg_code": __fields[3]
-    }
+    _pw_validation = validate_password_on_register(_input["pw1"], _input["pw2"])
+    if _pw_validation is None:
+        session["retry_form_values"] = _input
+        flash("Salasanasi eivät vastaa toisiaan. Tarkista tietojesi oikeellisuus.","warning")
+        return redirect("/register")
+    if sum(__input_validations) == 5 and sum(__field_validations) == 3:
+        _result = users.register(_input["uname"], _pw_validation, _input["dm_link"])
+        if _result is not None:
+            _retry_values = session.get("retry_form_values")
+            if _retry_values is not None:
+                del session["retry_form_values"]
+            flash("Rekisteröityminen onnistui!", "success")
+            if (_result[0] == 1 or users.count() == 1) and admins.register_admin(_result[0]):
+                flash("Tunnus rekisteröity pääkäyttäjäksi", "success")
+            return redirect("/login")
+        session["retry_form_values"] = _input
+        flash("Käyttäjätunnus on jo käytössä", "info")
+        return redirect("/register")
+    session["retry_form_values"] = _input
     flash("Virheellinen syöte yhdessä tai useammassa kentistä. \
-        Tarkista antamasi arvot.", "error")
+        Tarkista antamasi rekisteröitymistunnus tai salasanakentät.", "warning")
     return redirect("/register")

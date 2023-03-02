@@ -54,14 +54,16 @@ def _calculate_forbidden_score_xss(input_value: str):
     return sum(results)
 
 
-def input_validation(input_value: str, handle_mode:bool=False, short_mode:bool=False):
-    pattern = re.compile("[a-zA-Z0-9.$£€_\-\+@]{3,32}") if handle_mode else re.compile("[0-9]{1,4}") if short_mode else re.compile("[a-zA-Z0-9]{3,32}")
+def input_validation(input_value: str, handle_mode: bool = False, short_mode: bool = False):
+    pattern = re.compile("[a-zA-Z0-9.$£€_\-\+@]{5,32}") if handle_mode else re.compile(
+        "[0-9]{1,4}") if short_mode else re.compile("[a-zA-Z0-9]{3,32}")
     disqualifying_pattern = re.compile('[!#%^&*()<>?/\|}{~:;,\'\"´`¨]')
     if disqualifying_pattern.search(input_value):
         return False
     sql_injection_hazard_rate = _calculate_forbidden_score_sql(input_value)
     xss_hazard_rate = _calculate_forbidden_score_xss(input_value)
     return bool(sql_injection_hazard_rate < 32) and bool(xss_hazard_rate == 0) and bool(2 < len(input_value) <= 32) and bool(pattern.search(input_value))
+
 
 def link_input_validation(input_value: str):
     patterns = [
@@ -75,19 +77,19 @@ def link_input_validation(input_value: str):
 
 
 def _password_validation(input_value: str):
-    pattern = re.compile("[a-zA-Z0-9]{8,32}")
+    pattern = re.compile("[a-zA-Z0-9.$£€_\-\+@]{8,32}")
     return bool(
-        input_value is not None\
-            and 8 <= len(input_value) <= 32\
-            and pattern.search(input_value))
+        input_value is not None
+        and 8 <= len(input_value) <= 32
+        and pattern.search(input_value))
 
 
 def _username_validation(input_value: str):
-    pattern = re.compile("[a-zA-Z0-9]{5,32}")
+    pattern = re.compile("[a-zA-Z0-9.$£€_\-\+@]{5,32}")
     return bool(
-        input_value is not None\
-            and 5 <= len(input_value) <= 32\
-            and pattern.search(input_value))
+        input_value is not None
+        and 5 <= len(input_value) <= 32
+        and pattern.search(input_value))
 
 
 def validate_reg_or_log(input_value: str, validation: str):

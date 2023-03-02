@@ -1,0 +1,52 @@
+{% extends "management.html" %}
+{% block section %}
+  <h2>{{ local.current_mode }}</h2>
+  {% if session.username %}
+    <form action="/handle_chat_update" method="POST" class="vertical">
+      <input hidden id="id" name="id" value={{chat.id}} type="text">
+      <label for="cname">{{ local.chat_name }}</label>
+      <input name="cname" id="cname" type="text" value="{{ chat.cname }}"></br>
+      <label for="link">{{ local.link }}</label>
+      <input type="text" id="link" name="link" value="{{ chat.link }}">
+      <label for="topic">{{ local.topic }}</label>
+      <input name="topic" id="topic" list="topic_list" required value="{{chat.topic}}">
+      <datalist id="topic_list">
+        {% for value,label in topic_options %}
+            {% if label == chat.topic %}
+                <option value="{{ value }}" selected>{{ label }}</option>
+            {% else %}
+                <option value="{{ value }}">{{ label }}</option>
+            {% endif %}
+        {% endfor %}
+      </datalist></br>
+      <label for="group">{{ local.group }}</label>
+      <select name="group" id="group" required>
+        {% for value,label,restriction in group_options %}
+            {% if label == chat.group %}
+                <option value="{{ value }}" selected>{{ label }}</option>
+            {% else %}
+                <option value="{{ value }}">{{ label }}</option>
+            {% endif %}
+        {% endfor %}
+      </select></br>
+      <label for="moderator">{{local.mod}}</label>
+      <select name="moderator" id="moderator" required>
+        {% for value,label,excess in moderator_options %}
+            {% if label == chat.moderator %}
+                <option value="{{ value }}" selected>{{ label }}</option>
+            {% else %}
+                <option value="{{ value }}">{{ label }}</option>
+            {% endif %}
+        {% endfor %}
+      </select>
+      <input type="hidden" name="csrf_token" id="csrf_token" value="{{ session.csrf_token }}">
+      <input type="submit" value="{{ local.submit }}">
+    </form>
+  {% endif %}
+  {% if session.username %}
+    <form action="/handle_chat_removal" method="POST" class="vertical">
+        <input hidden type="text" id="id" name="id" value="{{chat.id}}">
+        <input type="submit" value="REMOVE">
+    </form>
+  {% endif %}
+{% endblock %}

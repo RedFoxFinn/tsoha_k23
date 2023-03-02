@@ -13,15 +13,10 @@ def frontpage():
         flash("Aloitetaan sovelluksen alustaminen...", "warning")
         return redirect("/init_site")
     localized = f"Tervetuloa sovellukseen {config.APP_NAME}"
-    headers = {
-        "public": "Julkiset",
-        "login": "Kirjautumalla",
-        "admin": "Rajoitetut"
-    }
     _chats = []
     _chats += chats.get_public_chats()
     if session.get("username") is not None and\
-            session.get("user_status") in ["ADMIN", "SUPER"]:
+            session.get("user_status") == "ADMIN":
         _chats += chats.get_login_restricted_chats()
         _chats += chats.get_age_restricted_chats()
         _chats += chats.get_security_restricted_chats()
@@ -31,6 +26,5 @@ def frontpage():
     return render_template(
         "index.html",
         text=localized,
-        header=headers,
         showable=_chats,
         management="False")

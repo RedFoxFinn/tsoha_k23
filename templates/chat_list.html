@@ -1,15 +1,27 @@
 {% block body %}
   <table>
   <tr>
-    {% if management == "True" %}<th>id</th>{% endif %}
-    <th>name</th>
-    <th>topic</th>
-    {% if management == "True" %}<th>group</th>{% endif %}
-    <th>link</th>
-    {% if management == "True" %}<th>restriction-level</th>{% endif %}
-    {% if management == "True" %}<th>edit?</th>{% endif %}
+  {% if management == "True" %}
+    <tr>
+      <th>id</th>
+      <th>name</th>
+      <th>topic</th>
+      <th>group</th>
+      <th>link</th>
+      <th>moderator</th>
+      <th>restriction-level</th>
+      <th>edit?</th>
+    </tr>
+  {% else %}
+    <tr>  
+      <th>name</th>
+      <th>topic</th>
+      <th>link</th>
+      {% if session.username %}<th>moderator</th>{% endif %}
+    </tr>
+  {% endif %}
   </tr>
-  {% for id,name,link,topic,group,restriction in showable %}
+  {% for id,name,link,topic,group,restriction,moderator,dm in showable %}
     {% include "chat.html" %}
   {% endfor %}
   </table>

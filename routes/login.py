@@ -27,34 +27,34 @@ def login():
 
 @application.route("/handle_login", methods=["POST"])
 def handle_login():
-    __fields = [request.form['uname'], request.form['password']]
+    _input = {
+        "uname": request.form['uname'],
+        "pw": request.form['password']
+    }
     __field_validations = [
-        1 if validators.validate_reg_or_log(__fields[0], "USERNAME") else 0,
-        1 if validators.validate_reg_or_log(__fields[1], "PASSWORD") else 0
+        1 if validators.validate_reg_or_log(
+            _input["uname"], "USERNAME") else 0,
+        1 if validators.validate_reg_or_log(_input["pw"], "PASSWORD") else 0
     ]
     __input_validations = [
-        1 if validators.input_validation(f) else 0 for f in __fields
+        1 if validators.input_validation(_input["uname"]) else 0,
+        1 if validators.input_validation(_input["pw"]) else 0
     ]
-    if sum(__field_validations) == 2 and\
-            sum(__input_validations) == 0:
-        _user_data = users.user_by_uname(__fields[0],full_mode=True)
-        validation_result = passwords.validate_password_on_login(
-            __fields[1], _user_data[2])
-        _admin_data = admins.check_admin(_user_data[0])
-        if validation_result:
-            session["username"] = _user_data[1]
-            session["csrf_token"] = secrets.token_hex(16)
-            if _admin_data:
-                session["user_status"] = "SUPER" if _admin_data[2] else\
-                    "ADMIN"
-            else:
-                session["user_status"] = "USER"
-            flash("Kirjautuminen onnistui!", "success")
-            return redirect("/")
-        flash("Tarkista tunnuksesi kirjoitusasu", "warning")
-        return redirect("/login")
-    flash("Virheellinen syöte yhdessä tai useammassa kentistä. \
+    if sum(__field_validations) < 2 and sum(__input_validations) < 2:
+        flash("Virheellinen syöte yhdessä tai useammassa kentistä. \
         Tarkista tiedot.", "error")
+        return redirect("/login")
+    _user_data = users.user_by_uname(_input["uname"], full_mode=True)
+    validation_result = passwords.validate_password_on_login(
+        _input["pw"], _user_data[3])
+    _admin_data = admins.check_admin(_user_data[0])
+    if validation_result:
+        session["username"] = _user_data[1]
+        session["csrf_token"] = secrets.token_hex(16)
+        session["user_status"] = "ADMIN" if _admin_data else "USER"
+        flash("Kirjautuminen onnistui!", "success")
+        return redirect("/")
+    flash("Tarkista tunnuksesi kirjoitusasu", "warning")
     return redirect("/login")
 
 

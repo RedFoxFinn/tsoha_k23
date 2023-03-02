@@ -48,7 +48,8 @@ def handle_password_change():
     ]
     if sum(__field_validations) == 4 and sum(_input_validations) == 0:
         login_data = {"un": __fields[0]}
-        user_result = DB.session.execute(__user_data_request, login_data)   # pylint: disable=no-member
+        user_result = DB.session.execute(
+            __user_data_request, login_data)   # pylint: disable=no-member
         user_data = user_result.fetchone()
         validation_result = validate_passwords_on_change(
             __fields[1],
@@ -58,8 +59,9 @@ def handle_password_change():
         if validation_result is not None:
             new_data = {"un": user_data[1], "hash": validation_result}
             try:
-                DB.session.execute(__user_data_update, new_data)    # pylint: disable=no-member
-                DB.session.commit() # pylint: disable=no-member
+                DB.session.execute(__user_data_update,
+                                   new_data)    # pylint: disable=no-member
+                DB.session.commit()  # pylint: disable=no-member
                 del session["username"]
                 del session["user_status"]
                 del session["csrf_token"]

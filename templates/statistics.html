@@ -2,8 +2,16 @@
 {% block body %}
   <h2>{{ local.text }}</h2>
   <ul>
-  {% for category,count in stats %}
-    <li>{{ category }}: {{ count }}</li>
+  {% for category,value in stats %}
+    {% if value.__class__.__name__ == 'list' %}
+        <ul>
+            {% for subcategory,subvalue in value %}
+                <li>{{ subcategory }}: {{ subvalue }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <li>{{ category }}: {{ value }}</li>
+    {% endif %}
   {% endfor %}
   </ul>
 {% endblock %}

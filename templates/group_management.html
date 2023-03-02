@@ -1,7 +1,7 @@
 {% extends "management.html" %}
 {% block section %}
   <h2>{{ local.current_mode }}</h2>
-  {% if session.username %}
+  {% if session.username and session.user_status == "ADMIN" %}
     <details><summary><strong>{{ local.add_new }}</strong></summary>
         <h4>{{ local.tip_header }}</h4>
         <ul>
@@ -11,18 +11,37 @@
             <li>{{ local.tip_numbers }}</li>
             <li>{{ local.tip_forbidden }}</li>
         </ul>
-        <form action="/handle_group_adding" method="POST" class="vertical">
-        <label for="gname">{{ local.group_name }}</label>
-        <input name="gname" id="gname" type="text" required></br>
-        <label for="restriction">{{ local.restriction_level }}</label>
-        <select name="restriction" id="restriction" required>
-            {% for value,label in restriction_options %}
-            <option value="{{ value }}">{{ label }}</option>
-            {% endfor %}
-        </select></br>
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-        <input type="submit" value="{{ local.submit }}">
-        </form>
+        {% if session.retry_form_values %}
+            <form action="/handle_group_adding" method="POST" class="vertical">
+                <label for="gname">{{ local.group_name }}</label>
+                <input name="gname" id="gname" type="text" required value="{{session.retry_form_values.gname}}" ></br>
+                <label for="restriction">{{ local.restriction_level }}</label>
+                <select name="restriction" id="restriction" required>
+                    {% for value,label in restriction_options %}
+                        {% if value == session.retry_form_values.restriction %}
+                            <option value="{{ value }}" selected>{{ label }}</option>
+                        {% else %}
+                            <option value="{{ value }}">{{ label }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select></br>
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                <input type="submit" value="{{ local.submit }}">
+            </form>
+        {% else %}
+            <form action="/handle_group_adding" method="POST" class="vertical">
+                <label for="gname">{{ local.group_name }}</label>
+                <input name="gname" id="gname" type="text" required></br>
+                <label for="restriction">{{ local.restriction_level }}</label>
+                <select name="restriction" id="restriction" required>
+                    {% for value,label in restriction_options %}
+                    <option value="{{ value }}">{{ label }}</option>
+                    {% endfor %}
+                </select></br>
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                <input type="submit" value="{{ local.submit }}">
+            </form>
+        {% endif %}
     </details>
   {% endif %}
   <h3>{{ local.listing }}</h3>

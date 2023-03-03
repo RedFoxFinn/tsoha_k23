@@ -1,9 +1,9 @@
 {% block body %}
   <table>
   <tr>
-    <th>id</th>
-    <th>name</th>
-    <th>restriction</th>
+    <th>{{ local.group_fields.id }}</th>
+    <th>{{ local.group_fields.name }}</th>
+    <th>{{ local.group_fields.restriction }}</th>
   </tr>
   {% for id,name,restriction in groups %}
     {% include "group.html" %}

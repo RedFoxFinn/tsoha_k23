@@ -12,7 +12,15 @@ def frontpage():
     if users.count() == 0:
         flash("Aloitetaan sovelluksen alustaminen...", "warning")
         return redirect("/init_site")
-    localized = f"Tervetuloa sovellukseen {config.APP_NAME}"
+    localized = {
+        "text":f"Tervetuloa sovellukseen {config.APP_NAME}",
+        "chat_fields": {
+            "name": "Keskustelu",
+            "topic": "Aihe",
+            "link": "Linkki",
+            "moderator": "Ylläpitäjä"
+        }
+    }
     _chats = []
     _chats += chats.get_public_chats()
     if session.get("username") is not None and\
@@ -25,6 +33,6 @@ def frontpage():
         _chats += chats.get_age_restricted_chats()
     return render_template(
         "index.html",
-        text=localized,
+        local=localized,
         showable=_chats,
         management="False")

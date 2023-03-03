@@ -242,6 +242,9 @@ Sovelluksella on kirjautumisnäkymä, jossa käyttäjä syöttää tunnuksensa j
 
 Kirjautumistiedoista salasanan vaihtaminen on olennainen toiminnallisuus ja se on toteutettuna sovelluksessa.
 
+#### Salasanan asettamisnäkymä
+
+Uuden salasanan asettamisen näkymä salasanan nollauksen jälkeisen kirjautumisen yhteydessä esitettäväksi.
 #### Hallintanäkymä
 
 Näkymästä käsin voidaan lisätä, päivittää ja poistaa keskusteluryhmiä, lisätä ja poistaa ryhmiä sekä muuttaa ylläpitäjästatuksia.

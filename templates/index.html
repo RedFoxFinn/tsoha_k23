@@ -1,9 +1,9 @@
 {% extends "layout.html" %}
 {% block body %}
   {% if session.username %}
-      <p>{{ text }}, {{ session.username }}!</p>
+      <p>{{ local.text }}, {{ session.username }}!</p>
   {% else %}
-      <p>{{ text }}!</p>
+      <p>{{ local.text }}!</p>
   {% endif %}
   {% include "chat_list.html" %}
 {% endblock %}

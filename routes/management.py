@@ -48,7 +48,17 @@ def chat_management():
         "update": "Päivitä",
         "tip_characters": "Sallittuja merkkejä",
         "tip_letters": "Kirjaimet a-z sekä A-Z",
-        "tip_numbers": "Numerot 0-9"
+        "tip_numbers": "Numerot 0-9",
+        "chat_fields": {
+            "id": "ID",
+            "name": "Keskustelu",
+            "topic": "Aihe",
+            "group": "Ryhmä",
+            "link": "Linkki",
+            "moderator": "Ylläpitäjä",
+            "restriction": "Rajoitus",
+            "edit": "Muokkaa"
+        }
     }
     _topic_data = topics.get_topics()
     _group_data = groups.get_groups()
@@ -268,7 +278,13 @@ def group_management():
         "tip_characters": "Sallittuja merkkejä",
         "tip_letters": "Kirjaimet a-z sekä A-Z",
         "tip_numbers": "Numerot 0-9",
-        "tip_forbidden": "Erikoismerkit eivät ole salittuja"
+        "tip_forbidden": "Erikoismerkit eivät ole salittuja",
+        "group_fields": {
+            "id": "ID",
+            "name": "Keskustelu",
+            "restriction": "Rajoitus",
+            "edit": "Muokkaa"
+        }
     }
     _restriction_opts = [("NONE", "Rajoittamaton"), ("LOGIN", "Kirjautuminen"),
                          ("AGE", "Ikärajoitettu"), ("SEC", "Turvaluokitettu")]
@@ -409,10 +425,9 @@ def user_management():
         "chats": "Keskusteluryhmien hallinta",
         "users": "Käyttäjien hallinta",
         "listing": "Käyttäjät",
-        "name": "käyttäjänimi",
+        "name": "Käyttäjänimi",
         "link": "Keskustelulinkki",
         "is_admin": "Pääkäyttäjä?",
-        "restriction_level": "Rajoitustaso",
         "change": "Muuta",
         "reset_pw": "Nollaa salasana",
         "reset": "Nollaa"

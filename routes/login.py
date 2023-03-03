@@ -1,4 +1,8 @@
+"""
+    routes/login.py
 
+    module for routing to applications login page, logout & login handling
+"""
 import secrets
 from flask import redirect, render_template, request, session, flash
 
@@ -12,6 +16,10 @@ from tools.config_module import PW_RESET
 
 @application.route("/login", methods=["GET"])
 def login():
+    """
+        module function responsible for routing to
+        applications login page
+    """
     if users.count() == 0:
         return redirect('/init_site')
     _user = session.get("username")
@@ -28,6 +36,10 @@ def login():
 
 @application.route("/handle_login", methods=["POST"])
 def handle_login():
+    """
+        module function responsible for routing the
+        applications login on submitting login form
+    """
     _input = {
         "uname": request.form['uname'],
         "pw": request.form['password']
@@ -47,9 +59,9 @@ def handle_login():
         return redirect("/login")
     _user_data = users.user_by_uname(_input["uname"], full_mode=True)
     if _user_data[3] == PW_RESET or \
-        (_input["pw"] == "RESET_MY_PASSWORD" and _user_data[3] == PW_RESET):
+            (_input["pw"] == "RESET_MY_PASSWORD" and _user_data[3] == PW_RESET):
         session["reset_for"] = _input["uname"]
-        flash("Salasana nollattu, aseta uusi","info")
+        flash("Salasana nollattu, aseta uusi", "info")
         return redirect("/reset")
     validation_result = passwords.validate_password_on_login(
         _input["pw"], _user_data[3])
@@ -66,6 +78,9 @@ def handle_login():
 
 @application.route("/logout")
 def logout():
+    """
+        module function responsible for logging out user on logout
+    """
     del session["username"]
     del session["user_status"]
     del session["csrf_token"]

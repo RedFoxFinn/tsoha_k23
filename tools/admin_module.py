@@ -21,14 +21,15 @@ def _cancel_admin_status(id_value: int, admin_id: int):
         WHERE admin_id={id_value}"
     try:
         DB.session.execute(_admin_delete_sql)   # pylint: disable=no-member
-        DB.session.commit() # pylint: disable=no-member
-    except: # pylint: disable=bare-except
+        DB.session.commit()  # pylint: disable=no-member
+    except:  # pylint: disable=bare-except
         return None
     try:
-        DB.session.execute(_admin_ownership_transfer_sql)   # pylint: disable=no-member
-        DB.session.commit() # pylint: disable=no-member
+        DB.session.execute(
+            _admin_ownership_transfer_sql)   # pylint: disable=no-member
+        DB.session.commit()  # pylint: disable=no-member
         return True
-    except: # pylint: disable=bare-except
+    except:  # pylint: disable=bare-except
         return False
 
 
@@ -38,9 +39,9 @@ def change_admin_status(uid: int, admin_id: int):
     _data = _result.fetchone()
     if _data is None:
         _outcome = _register_admin(uid)
-        return ('REGISTER',_outcome)
-    _outcome = _cancel_admin_status(_data[0],admin_id)
-    return ('CANCEL',_outcome)
+        return ('REGISTER', _outcome)
+    _outcome = _cancel_admin_status(_data[0], admin_id)
+    return ('CANCEL', _outcome)
 
 
 def check_admin(uid: int):

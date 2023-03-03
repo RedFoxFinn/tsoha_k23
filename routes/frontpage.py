@@ -1,4 +1,8 @@
+"""
+    routes/frontpage.py
 
+    module for routing to front page of the application
+"""
 from flask import redirect, render_template, flash, session
 
 from app import application
@@ -9,11 +13,15 @@ from tools import config_module as config,\
 
 @application.route("/", methods=["GET"])
 def frontpage():
+    """
+        module function responsible for routing frontpage and
+        setting variables for template
+    """
     if users.count() == 0:
         flash("Aloitetaan sovelluksen alustaminen...", "warning")
         return redirect("/init_site")
     localized = {
-        "text":f"Tervetuloa sovellukseen {config.APP_NAME}",
+        "text": f"Tervetuloa sovellukseen {config.APP_NAME}",
         "chat_fields": {
             "name": "Keskustelu",
             "topic": "Aihe",

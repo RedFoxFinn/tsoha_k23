@@ -74,7 +74,12 @@ def users_with_admin_status():
         module function to return list of users with
         respective information whether they are admin or not
     """
-    _sql = f"SELECT U.id AS id, U.uname AS uname, U.dm_link AS dm_link, EXISTS(SELECT * FROM Admins WHERE user_id=U.id) AS is_admin FROM ({USER_FETCH_SQL_LIMITED}) AS U"
+    _sql = f"SELECT \
+        U.id AS id, \
+        U.uname AS uname, \
+        U.dm_link AS dm_link, \
+        EXISTS(SELECT * FROM Admins WHERE user_id=U.id) AS is_admin \
+        FROM ({USER_FETCH_SQL_LIMITED}) AS U"
     _result = DB.session.execute(_sql)  # pylint: disable=no-member
     _data = _result.fetchall()
     return _data
@@ -87,9 +92,9 @@ def reset_user_password(id_value: int, admin_id: int):
     _sql = f"UPDATE Users SET pw_hash='{PW_RESET}' WHERE id={id_value}"
     try:
         DB.session.execute(_sql)    # pylint: disable=no-member
-        DB.session.commit() # pylint: disable=no-member
+        DB.session.commit()  # pylint: disable=no-member
         return True
-    except: # pylint: disable=bare-except
+    except:  # pylint: disable=bare-except
         return False
 
 
@@ -100,7 +105,7 @@ def set_new_password(id_value: int, pw_hash: str):
     _sql = f"UPDATE Users SET pw_hash='{pw_hash}' WHERE id={id_value}"
     try:
         DB.session.execute(_sql)    # pylint: disable=no-member
-        DB.session.commit() # pylint: disable=no-member
+        DB.session.commit()  # pylint: disable=no-member
         return True
-    except: # pylint: disable=bare-except
+    except:  # pylint: disable=bare-except
         return False

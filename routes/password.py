@@ -15,7 +15,7 @@ def reset_user_password():
     if _user is not None:
         del session["username"]
     if session.get("reset_for") is None:
-        flash("Siirrytään kirjautumiseen.","info")
+        flash("Siirrytään kirjautumiseen.", "info")
         return redirect("/login")
     localized = {
         "text": "Salasanan asettaminen",
@@ -40,10 +40,10 @@ def reset_user_password():
 def handle_password_set():
     _user = session.get("username")
     if _user is not None:
-        flash("Siirrytään etusivulle.","info")
+        flash("Siirrytään etusivulle.", "info")
         return redirect("/")
     if session.get("reset_for") is None:
-        flash("Siirrytään kirjautumiseen.","info")
+        flash("Siirrytään kirjautumiseen.", "info")
         return redirect("/login")
     _fields = {
         "password1": request.form["new_password"],
@@ -53,8 +53,10 @@ def handle_password_set():
     __field_validations = [
         1 if validators.validate_reg_or_log(
             _fields["uname"], "USERNAME") else 0,
-        1 if validators.validate_reg_or_log(_fields["password1"], "PASSWORD") else 0,
-        1 if validators.validate_reg_or_log(_fields["password2"], "PASSWORD") else 0
+        1 if validators.validate_reg_or_log(
+            _fields["password1"], "PASSWORD") else 0,
+        1 if validators.validate_reg_or_log(
+            _fields["password2"], "PASSWORD") else 0
     ]
     __input_validations = [
         1 if validators.input_validation(_fields["uname"]) else 0,
@@ -74,7 +76,7 @@ def handle_password_set():
             Tarkista tietojesi oikeellisuus.", "warning")
         return redirect("/reset")
     _user_data = users.user_by_uname(_fields["uname"])
-    _result = users.set_new_password(_user_data[0],_pw_validation)
+    _result = users.set_new_password(_user_data[0], _pw_validation)
     if _result:
         _retry_values = session.get("retry_form_values")
         if _retry_values is not None:
@@ -86,6 +88,7 @@ def handle_password_set():
     flash("Virheellinen syöte yhdessä tai useammassa kentistä. \
         Tarkista tiedot.", "error")
     return redirect("/reset")
+
 
 @application.route("/password")
 def password():

@@ -412,11 +412,11 @@ def handle_group_update():
 def user_management():
     _user = session.get("username")
     if _user is None:
-        flash("Toiminto vaatii kirjautumisen.","warning")
+        flash("Toiminto vaatii kirjautumisen.", "warning")
         return redirect("/login")
     _admin_data = admins.check_admin_by_uname(_user)
     if _admin_data is None:
-        flash("Toiminto vaatii pääkäyttäjän oikeudet.","error")
+        flash("Toiminto vaatii pääkäyttäjän oikeudet.", "error")
         return redirect("/management")
     localized = {
         "text": "Hallintapaneeli",
@@ -441,37 +441,41 @@ def user_management():
         )
     return "user management will eventually be here. Soon<sup>TM</sup>"
 
+
 @application.route("/handle_admin_change", methods=["POST"])
 def handle_admin_change():
     if request.form["csrf_token"] != session.get("csrf_token"):
         return abort(403)
     _user = session.get("username")
     if _user is None:
-        flash("Toiminto vaatii kirjautumisen.","warning")
+        flash("Toiminto vaatii kirjautumisen.", "warning")
         return redirect("/login")
     _admin_data = admins.check_admin_by_uname(_user)
     if _admin_data is None:
-        flash("Toiminto vaatii pääkäyttäjän oikeudet.","error")
+        flash("Toiminto vaatii pääkäyttäjän oikeudet.", "error")
         return redirect("/management")
     _fields = {
         "id": int(request.form["id"]),
         "uname": request.form["uname"]
     }
     if _admin_data[1] == _fields["id"]:
-        flash("Et voi muuttaa omaa statustasi","error")
+        flash("Et voi muuttaa omaa statustasi", "error")
         return redirect("/management/users")
-    _result = admins.change_admin_status(_fields["id"],_admin_data[0])
+    _result = admins.change_admin_status(_fields["id"], _admin_data[0])
     if _result[0] == 'REGISTER':
         if _result[1]:
-            flash(f"Käyttäjä {_fields['uname']} asetettu pääkäyttäjäksi","success")
+            flash(
+                f"Käyttäjä {_fields['uname']} asetettu pääkäyttäjäksi", "success")
         else:
-            flash("Virhe: muutettavia tietoja ei löydetty.","error")
+            flash("Virhe: muutettavia tietoja ei löydetty.", "error")
     if _result[0] == 'CANCEL':
         if _result[1]:
-            flash(f"Käyttäjän {_fields['uname']} pääkäyttäjäoikeudet peruttu","success")
+            flash(
+                f"Käyttäjän {_fields['uname']} pääkäyttäjäoikeudet peruttu", "success")
         else:
-            flash("Virhe: muutettavia tietoja ei löydetty.","error")
+            flash("Virhe: muutettavia tietoja ei löydetty.", "error")
     return redirect("/management/users")
+
 
 @application.route("/reset_password", methods=["POST"])
 def reset_password():
@@ -479,11 +483,11 @@ def reset_password():
         return abort(403)
     _user = session.get("username")
     if _user is None:
-        flash("Toiminto vaatii kirjautumisen.","warning")
+        flash("Toiminto vaatii kirjautumisen.", "warning")
         return redirect("/login")
     _admin_data = admins.check_admin_by_uname(_user)
     if _admin_data is None:
-        flash("Toiminto vaatii pääkäyttäjän oikeudet.","error")
+        flash("Toiminto vaatii pääkäyttäjän oikeudet.", "error")
         return redirect("/management")
     _fields = {
         "id": int(request.form["id"]),
@@ -494,7 +498,7 @@ def reset_password():
         del session["user_status"]
     _outcome = users.reset_user_password(_fields["id"], _admin_data[0])
     if _outcome:
-        flash(f"Käyttäjän {_fields['uname']} salasana nollattu.","info")
+        flash(f"Käyttäjän {_fields['uname']} salasana nollattu.", "info")
         return redirect("/management/users")
-    flash("Virhe: muutettavia tietoja ei löydetty.","error")
+    flash("Virhe: muutettavia tietoja ei löydetty.", "error")
     return redirect("/management/users")

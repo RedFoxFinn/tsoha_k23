@@ -13,3 +13,4 @@ SECRET_KEY = str(getenv("SECRET_KEY"))
 APP_NAME = str(getenv("CUSTOM_APP_NAME"))\
     if getenv("CUSTOM_APP_NAME") is None\
     or len(getenv("CUSTOM_APP_NAME")) == 0 else "ChatList"
+PW_RESET = str(getenv("PW_RESET_PLACEHOLDER_VALUE"))

@@ -1,0 +1,15 @@
+{% block body %}
+  <table>
+  <tr>
+    <th>id</th>
+    <th>{{ local.name}}</th>
+    <th>{{ local.link }}</th>
+    <th>{{ local.is_admin }}</th>
+    <th>{{ local.change }}</th>
+    <th>{{ local.reset_pw }}</th>
+  </tr>
+  {% for id,uname,dm_link,is_admin in users %}
+    {% include "user.html" %}
+  {% endfor %}
+  </table>
+{% endblock %}

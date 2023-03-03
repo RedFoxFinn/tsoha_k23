@@ -1,0 +1,6 @@
+{% extends "management.html" %}
+{% block section %}
+  <h2>{{ local.current_mode }}</h2>
+  <h3>{{ local.listing }}</h3>
+  {% include "user_list.html" %}
+{% endblock %}

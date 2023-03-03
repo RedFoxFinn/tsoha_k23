@@ -1,0 +1,39 @@
+{% block body %}
+<tr>
+<td>{{ id }}</td>
+<td>{{ uname }}</td>
+<td>{{ dm_link }}</td>
+<td>{{ is_admin }}</td>
+<td>
+    {% if uname == session.username %}
+        <p>Et voi muuttaa statustasi</p>
+    {% else %}
+        {% if is_admin == "True" %}
+            <form action="/handle_admin_change" method="POST">
+                <input hidden type="text" id="id" name="id" value="{{ id }}">
+                <input hidden type="text" id="uname" name="uname" value="{{ uname }}">
+                <input hidden type="text" id="to_admin" name="to_admin" value="0">
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                <input type="submit" value="{{ local.change }}">
+            </form>
+        {% else %}
+            <form action="/handle_admin_change" method="POST">
+                <input hidden type="text" id="id" name="id" value="{{ id }}">
+                <input hidden type="text" id="uname" name="uname" value="{{ uname }}">
+                <input hidden type="text" id="to_admin" name="to_admin" value="1">
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                <input type="submit" value="{{ local.change }}">
+            </form>
+        {% endif %}
+    {% endif %}
+</td>
+<td>
+    <form action="/reset_password" method="POST">
+        <input hidden type="text" id="id" name="id" value="{{id}}">
+        <input hidden type="text" id="uname" name="uname" value="{{uname}}">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+        <input type="submit" value="{{ local.reset }}">
+    </form>
+</td>
+</tr>
+{% endblock %}

@@ -7,6 +7,7 @@ from tools import user_module as users,\
     admin_module as admins,\
     validate_input as validators,\
     password_tools as passwords
+from tools.config_module import PW_RESET
 
 
 @application.route("/login", methods=["GET"])
@@ -45,6 +46,11 @@ def handle_login():
         Tarkista tiedot.", "error")
         return redirect("/login")
     _user_data = users.user_by_uname(_input["uname"], full_mode=True)
+    if _user_data[3] == PW_RESET or \
+        (_input["pw"] == "RESET_MY_PASSWORD" and _user_data[3] == PW_RESET):
+        session["reset_for"] = _input["uname"]
+        flash("Salasana nollattu, aseta uusi","info")
+        return redirect("/reset")
     validation_result = passwords.validate_password_on_login(
         _input["pw"], _user_data[3])
     _admin_data = admins.check_admin(_user_data[0])

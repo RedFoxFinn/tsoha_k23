@@ -20,7 +20,7 @@ def management():
         "text": "Hallintapaneeli",
         "groups": "Ryhmien hallinta",
         "chats": "Keskusteluryhmien hallinta",
-        "admins": "Pääkäyttäjien hallinta"
+        "users": "Käyttäjien hallinta"
     }
     return render_template("management.html", local=localized)
 
@@ -39,7 +39,7 @@ def chat_management():
         "listing": "Keskusteluryhmälista",
         "groups": "Ryhmien hallinta",
         "chats": "Keskusteluryhmien hallinta",
-        "admins": "Pääkäyttäjien hallinta",
+        "users": "Käyttäjien hallinta",
         "chat_name": "Keskusteluryhmän nimi",
         "topic": "Aihe",
         "group": "Ryhmä",
@@ -82,7 +82,7 @@ def manage_single_chat(id_value: int):
         "update": "Keskusteluryhmän muokkaus",
         "groups": "Ryhmien hallinta",
         "chats": "Keskusteluryhmien hallinta",
-        "admins": "Pääkäyttäjien hallinta",
+        "users": "Käyttäjien hallinta",
         "chat_name": "Keskusteluryhmän nimi",
         "topic": "Aihe",
         "group": "Ryhmä",
@@ -258,7 +258,7 @@ def group_management():
         "listing": "Ryhmälista",
         "groups": "Ryhmien hallinta",
         "chats": "Keskusteluryhmien hallinta",
-        "admins": "Pääkäyttäjien hallinta",
+        "users": "Käyttäjien hallinta",
         "group_name": "Ryhmän nimi",
         "restriction_level": "Rajoitustaso",
         "submit": "Lisää ryhmä",
@@ -305,7 +305,7 @@ def manage_single_group(id_value: int):
         "current_mode": "Ryhmän hallinta",
         "groups": "Ryhmien hallinta",
         "chats": "Keskusteluryhmien hallinta",
-        "admins": "Ylläpitäjien hallinta",
+        "users": "Käyttäjien hallinta",
         "group_name": "Ryhmän nimi",
         "restriction_level": "Rajoitustaso",
         "submit": "Päivitä ryhmä"
@@ -392,6 +392,94 @@ def handle_group_update():
     return redirect(f"/management/groups/{_input['id']}")
 
 
-@application.route("/management/admins")
-def admin_management():
-    return "admin management will eventually be here. Soon<sup>TM</sup>"
+@application.route("/management/users")
+def user_management():
+    _user = session.get("username")
+    if _user is None:
+        flash("Toiminto vaatii kirjautumisen.","warning")
+        return redirect("/login")
+    _admin_data = admins.check_admin_by_uname(_user)
+    if _admin_data is None:
+        flash("Toiminto vaatii pääkäyttäjän oikeudet.","error")
+        return redirect("/management")
+    localized = {
+        "text": "Hallintapaneeli",
+        "current_mode": "Käyttäjien hallinta",
+        "groups": "Ryhmien hallinta",
+        "chats": "Keskusteluryhmien hallinta",
+        "users": "Käyttäjien hallinta",
+        "listing": "Käyttäjät",
+        "name": "käyttäjänimi",
+        "link": "Keskustelulinkki",
+        "is_admin": "Pääkäyttäjä?",
+        "restriction_level": "Rajoitustaso",
+        "change": "Muuta",
+        "reset_pw": "Nollaa salasana",
+        "reset": "Nollaa"
+    }
+    _user_data = users.users_with_admin_status()
+    if _user_data:
+        return render_template(
+            "user_management.html",
+            local=localized,
+            users=_user_data
+        )
+    return "user management will eventually be here. Soon<sup>TM</sup>"
+
+@application.route("/handle_admin_change", methods=["POST"])
+def handle_admin_change():
+    if request.form["csrf_token"] != session.get("csrf_token"):
+        return abort(403)
+    _user = session.get("username")
+    if _user is None:
+        flash("Toiminto vaatii kirjautumisen.","warning")
+        return redirect("/login")
+    _admin_data = admins.check_admin_by_uname(_user)
+    if _admin_data is None:
+        flash("Toiminto vaatii pääkäyttäjän oikeudet.","error")
+        return redirect("/management")
+    _fields = {
+        "id": int(request.form["id"]),
+        "uname": request.form["uname"]
+    }
+    if _admin_data[1] == _fields["id"]:
+        flash("Et voi muuttaa omaa statustasi","error")
+        return redirect("/management/users")
+    _result = admins.change_admin_status(_fields["id"],_admin_data[0])
+    if _result[0] == 'REGISTER':
+        if _result[1]:
+            flash(f"Käyttäjä {_fields['uname']} asetettu pääkäyttäjäksi","success")
+        else:
+            flash("Virhe: muutettavia tietoja ei löydetty.","error")
+    if _result[0] == 'CANCEL':
+        if _result[1]:
+            flash(f"Käyttäjän {_fields['uname']} pääkäyttäjäoikeudet peruttu","success")
+        else:
+            flash("Virhe: muutettavia tietoja ei löydetty.","error")
+    return redirect("/management/users")
+
+@application.route("/reset_password", methods=["POST"])
+def reset_password():
+    if request.form["csrf_token"] != session.get("csrf_token"):
+        return abort(403)
+    _user = session.get("username")
+    if _user is None:
+        flash("Toiminto vaatii kirjautumisen.","warning")
+        return redirect("/login")
+    _admin_data = admins.check_admin_by_uname(_user)
+    if _admin_data is None:
+        flash("Toiminto vaatii pääkäyttäjän oikeudet.","error")
+        return redirect("/management")
+    _fields = {
+        "id": int(request.form["id"]),
+        "uname": request.form["uname"]
+    }
+    if _fields["uname"] == _user:
+        del session["username"]
+        del session["user_status"]
+    _outcome = users.reset_user_password(_fields["id"], _admin_data[0])
+    if _outcome:
+        flash(f"Käyttäjän {_fields['uname']} salasana nollattu.","info")
+        return redirect("/management/users")
+    flash("Virhe: muutettavia tietoja ei löydetty.","error")
+    return redirect("/management/users")

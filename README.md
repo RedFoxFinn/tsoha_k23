@@ -61,6 +61,9 @@ Kolmannelle riville kirjoitetaan `SECRET_KEY=`, jonka perään kirjoitetaan tai 
 
 Neljännelle riville voi halutessaan syöttää vapaavalintaisen nimen, joka tulee sovelluksen käyttöliittymässä näytettäväksi nimeksi. Tämä on hyvä keino yksilöidä sovellus tietylle käyttäjäryhmälle, kuten harrasteporukalle. Kirjoita tällöin `CUSTOM_APP_NAME=` ja haluamasi nimi sovellukselle. Mikäli merkkijono on tyhjä tai se puuttuu, tulee sovelluksen nimeksi oletusarvoinen `ChatList`.
 
+Viimeisenä `.env`-tiedostoon lisätään salasanan nollaustoimintoa varten rivi `PW_RESET_PLACEHOLDER_VALUE=`, jonka perään kirjoitetaan omavalintainen merkkijono. Tämä arvo syötetään käyttäjän salatun salasanan tilalle, jos käyttäjä on pyytänyt pääkäyttäjää nollaamaan salasanansa.
+Kirjautuessaan uusiksi sovellukseen käyttäjä syöttää salasanakenttään merkkijonoksi `RESET_MY_PASSWORD`, jolloin hänet ohjataan uuden salasanan luontiin.
+
 4:
 
 Lopuksi ennen käynnistämistä virtuaaliympäristössä määritetään vielä sovelluksen tietokannan rakenne ja tarvittavat taulut komennolla

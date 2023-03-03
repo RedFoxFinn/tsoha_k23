@@ -77,7 +77,7 @@ def handle_registration():
                 del session["retry_form_values"]
             flash("Rekisteröityminen onnistui!", "success")
             if (_result[0] == 1 or users.count() == 1) and \
-                    admins.register_admin(_result[0]):
+                admins.register_admin(_result[0]):
                 flash("Tunnus rekisteröity pääkäyttäjäksi", "success")
             return redirect("/login")
         session["retry_form_values"] = _input
